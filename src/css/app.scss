@@ -1,37 +1,43 @@
 // app global css in SCSS form
 
 .container {
-    margin: 0 auto;
-    max-width: $stretch-max-width;
-  }
-  
-  .body--light {
-    background-color: #fafafa;
-  }
-  
-  .gap-xs {
-    gap: 0.25rem;
-  }
-  
-  .gap-sm {
-    gap: 0.5rem;
-  }
-  
-  .gap-md {
-    gap: 1rem;
-  }
-  
-  .gap-lg {
-    gap: 1.5rem;
-  }
-  
-  .gap-xl {
-    gap: 3rem;
-  }
-  
-  
-  .active-item-menu {
-    background-color: rgba($color: $primary, $alpha: .2);
-    color: $primary;
-  }
-  
+  margin: 0 auto;
+  max-width: $stretch-max-width;
+}
+
+.body--light {
+  background-color: #fafafa;
+}
+
+/* GAP */
+
+.gap-xs {
+  gap: 0.25rem;
+}
+
+.gap-sm {
+  gap: 0.5rem;
+}
+
+.gap-md {
+  gap: 1rem;
+}
+
+.gap-lg {
+  gap: 1.5rem;
+}
+
+.gap-xl {
+  gap: 3rem;
+}
+
+/* --- */
+
+.active-item-menu {
+  background-color: rgba($color: $primary, $alpha: 0.2);
+  color: $primary;
+}
+
+.bg-theme-paper {
+  background-color: $dark;
+}

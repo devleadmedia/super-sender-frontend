@@ -2,16 +2,14 @@ import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
 import type { Status } from 'src/enums/Status.enum'
 import type { IPrice } from 'src/types/price/IPrice.type'
-import type { ITablePrice } from 'src/types/price/ITablePrice.type'
+import type { IDataSMS, ITablePrice } from 'src/types/price/ITablePrice.type'
 import type { IBasicEntity } from 'src/types/IBasicEntity.type'
 import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as PriceService from 'src/services/price.service'
 import * as UserService from 'src/services/user.service'
-import { TypeRoute } from 'src/enums/shot/TypeRoute.enum'
-import { TypeShot } from 'src/enums/shot/TypeShot.enum'
-import { TypeSMS } from 'src/enums/shot/TypeSMS.enum'
 import { cloneDeep } from 'src/utils/clone.util'
+import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
 
 interface IState {
   visiblePassword: boolean
@@ -24,7 +22,7 @@ interface IState {
     name: string
     client: string
     status: Status
-    tablePrice: ITablePrice[]
+    tablePrice: ITablePrice<IDataSMS>[]
   }
   list: IPrice[]
   filter: string
@@ -41,8 +39,8 @@ export function usePriceManagement() {
           data: [
             {
               typeRoute: TypeRoute.shortCode,
-              typeShot: TypeShot.flash,
-              typeSMS: TypeSMS.oneWay,
+              typeShot: TypeShot.oneWay,
+              typeSMS: TypeSMS.flash,
               value: 0,
             },
           ],
@@ -94,8 +92,8 @@ export function usePriceManagement() {
     else
       state.value.form.tablePrice[tableIdx].data.push({
         typeRoute: TypeRoute.shortCode,
-        typeShot: TypeShot.flash,
-        typeSMS: TypeSMS.oneWay,
+        typeShot: TypeShot.oneWay,
+        typeSMS: TypeSMS.flash,
         value: 0,
       })
   }

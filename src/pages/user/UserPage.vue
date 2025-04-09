@@ -68,6 +68,7 @@
       max-width="500px"
       name="usuário"
       @clear-edit-dialog="clearEditDialog"
+      @submit="save"
     >
       <template #content>
         <q-card-section class="row q-col-gutter-md">
@@ -111,12 +112,30 @@
               </template>
             </q-select>
           </div>
+
+          <div class="col-12">
+            <q-select
+              label="Tipos de envio"
+              v-model="state.form.shippingType"
+              :rules="[requiredRule]"
+              :options="shippingTypeOptions"
+              v-bind="$vSelect"
+              multiple
+              use-chips
+              @update:model-value="clearShootingPermissions"
+            >
+              <template v-slot:selected-item="scope">
+                <chip-select :scope="scope" />
+              </template>
+            </q-select>
+          </div>
+
           <div class="col-12">
             <q-select
               label="Permissões de disparo"
               v-model="state.form.shootingPermissions"
               :rules="[requiredRule]"
-              :options="permissionsOptions"
+              :options="currentShootingPermissionsOptions"
               v-bind="$vSelect"
               multiple
               use-chips
@@ -158,7 +177,7 @@
             </div>
             <div class="col-12 col-md-6">
               <q-input
-                label="Email"
+                label="Confirmar senha"
                 :type="state.visiblePassword ? 'text' : 'password'"
                 :rules="[
                   requiredRule,
@@ -200,13 +219,15 @@ import {
   strongPasswordRule,
 } from 'src/validations/form-rules/mixedRules.util'
 import { rolesOptions } from 'src/constants/roles.const'
-import { permissionsOptions } from 'src/constants/shot/shootingPermissions.const'
 import { statusOptions } from 'src/constants/status.const'
+import { shippingTypeOptions } from 'src/constants/shippingType.const'
 
 const {
   state,
   dialog,
   loader,
+  currentShootingPermissionsOptions,
+  save,
   fetchList,
   loaderStatus,
   createDialog,
@@ -214,6 +235,7 @@ const {
   openEditDialog,
   clearEditDialog,
   openActionDialog,
+  clearShootingPermissions,
 } = useUser()
 
 onMounted(async () => {

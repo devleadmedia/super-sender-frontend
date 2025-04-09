@@ -1,15 +1,13 @@
-import { TypeRoute } from 'src/enums/shot/TypeRoute.enum'
-import { TypeShot } from 'src/enums/shot/TypeShot.enum'
-import { TypeSMS } from 'src/enums/shot/TypeSMS.enum'
+import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
 
 export const typeSMSOptions = [
-  { name: 'One Way', value: TypeSMS.oneWay },
-  { name: 'Two Way', value: TypeSMS.twoWay },
+  { name: 'Flash', value: TypeSMS.flash },
+  { name: 'Standard', value: TypeSMS.standard },
 ]
 
 export const typeShotOptions = [
-  { name: 'Flash', value: TypeShot.flash },
-  { name: 'Standard', value: TypeShot.standard },
+  { name: 'One Way', value: TypeShot.oneWay },
+  { name: 'Two Way', value: TypeShot.twoWay },
 ]
 
 export const typeRouteOptions = [
@@ -22,13 +20,13 @@ type IDictionary<T extends TypeSMS | TypeShot | TypeRoute> = {
 }
 
 export const typeSMSDictionary: IDictionary<TypeSMS> = {
-  [TypeSMS.oneWay]: { name: 'One Way' },
-  [TypeSMS.twoWay]: { name: 'Two Way' },
+  [TypeSMS.flash]: { name: 'Flash' },
+  [TypeSMS.standard]: { name: 'Standard' },
 }
 
 export const typeShotDictionary: IDictionary<TypeShot> = {
-  [TypeShot.flash]: { name: 'Flash' },
-  [TypeShot.standard]: { name: 'Standard' },
+  [TypeShot.oneWay]: { name: 'One Way' },
+  [TypeShot.twoWay]: { name: 'Two Way' },
 }
 
 export const typeRouteDictionary: IDictionary<TypeRoute> = {

@@ -5,4 +5,8 @@ export enum ShootingPermissions {
   longCode = 'longCode',
   standard = 'standard',
   flashSMS = 'flashSMS',
+
+  exampleEmail = 'exampleEmail',
+
+  exampleWhasapp = 'exampleWhasapp'
 }

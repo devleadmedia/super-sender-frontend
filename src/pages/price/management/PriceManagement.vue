@@ -82,7 +82,7 @@
           </div>
           <div class="col-12 col-md-6">
             <q-select
-              label="Status"
+              label="Cliente"
               :rules="[requiredRule]"
               v-bind="$vSelect"
               v-model="state.form.client"

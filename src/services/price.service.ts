@@ -1,66 +1,68 @@
 import { api } from 'src/boot/axios'
-import { TypeRoute } from 'src/enums/shot/TypeRoute.enum'
-import { TypeShot } from 'src/enums/shot/TypeShot.enum'
-import { TypeSMS } from 'src/enums/shot/TypeSMS.enum'
-import type { ITablePrice } from 'src/types/price/ITablePrice.type'
+import type { ITablePriceResult } from 'src/types/price/ITablePrice.type'
 import type { IPrice } from 'src/types/price/IPrice.type'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { Status } from 'src/enums/Status.enum'
+import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
 
-export async function getTablePrice(): Promise<ITablePrice[]> {
+export async function getTablePrice(): Promise<ITablePriceResult> {
   /* DEVE PESQUISAR USUARIO PELO TOKEN */
   /* const { data } = await api.get('/price/table')
   return data */
 
   await fakePromise(1000)
-  return [
-    {
-      name: 'SMS',
-      data: [
-        {
-          typeSMS: TypeSMS.oneWay,
-          typeRoute: TypeRoute.longCode,
-          typeShot: TypeShot.standard,
-          value: 0.14,
-        },
-        {
-          typeSMS: TypeSMS.oneWay,
-          typeRoute: TypeRoute.shortCode,
-          typeShot: TypeShot.standard,
-          value: 0.21,
-        },
-        {
-          typeSMS: TypeSMS.twoWay,
-          typeRoute: TypeRoute.longCode,
-          typeShot: TypeShot.standard,
-          value: 0.19,
-        },
-        {
-          typeSMS: TypeSMS.twoWay,
-          typeRoute: TypeRoute.shortCode,
-          typeShot: TypeShot.standard,
-          value: 0.15,
-        },
-      ],
-    },
-    {
-      name: 'Flash SMS',
-      data: [
-        {
-          typeRoute: TypeRoute.longCode,
-          typeShot: TypeShot.flash,
-          typeSMS: TypeSMS.oneWay,
-          value: 0.04,
-        },
-        {
-          typeRoute: TypeRoute.shortCode,
-          typeShot: TypeShot.flash,
-          typeSMS: TypeSMS.twoWay,
-          value: 0.1,
-        },
-      ],
-    },
-  ]
+  return {
+    tableSMS: [
+      {
+        name: 'SMS',
+        data: [
+          {
+            typeSMS: TypeSMS.flash,
+            typeRoute: TypeRoute.longCode,
+            typeShot: TypeShot.oneWay,
+            value: 0.14,
+          },
+          {
+            typeSMS: TypeSMS.flash,
+            typeRoute: TypeRoute.shortCode,
+            typeShot: TypeShot.oneWay,
+            value: 0.21,
+          },
+          {
+            typeSMS: TypeSMS.flash,
+            typeRoute: TypeRoute.longCode,
+            typeShot: TypeShot.oneWay,
+            value: 0.19,
+          },
+          {
+            typeSMS: TypeSMS.flash,
+            typeRoute: TypeRoute.shortCode,
+            typeShot: TypeShot.oneWay,
+            value: 0.15,
+          },
+        ],
+      },
+      {
+        name: 'Flash SMS',
+        data: [
+          {
+            typeRoute: TypeRoute.longCode,
+            typeShot: TypeShot.oneWay,
+            typeSMS: TypeSMS.standard,
+            value: 0.04,
+          },
+          {
+            typeRoute: TypeRoute.shortCode,
+            typeShot: TypeShot.oneWay,
+            typeSMS: TypeSMS.standard,
+            value: 0.1,
+          },
+        ],
+      },
+    ],
+    tableEmail: [],
+    tableWhatsapp: [],
+  }
 }
 
 export async function getAll(): Promise<IPrice[]> {
@@ -81,27 +83,27 @@ export async function getAll(): Promise<IPrice[]> {
           name: 'SMS',
           data: [
             {
-              typeSMS: TypeSMS.oneWay,
+              typeSMS: TypeSMS.flash,
               typeRoute: TypeRoute.longCode,
-              typeShot: TypeShot.standard,
+              typeShot: TypeShot.oneWay,
               value: 0.14,
             },
             {
-              typeSMS: TypeSMS.oneWay,
+              typeSMS: TypeSMS.flash,
               typeRoute: TypeRoute.shortCode,
-              typeShot: TypeShot.standard,
+              typeShot: TypeShot.oneWay,
               value: 0.21,
             },
             {
-              typeSMS: TypeSMS.twoWay,
+              typeSMS: TypeSMS.flash,
               typeRoute: TypeRoute.longCode,
-              typeShot: TypeShot.standard,
+              typeShot: TypeShot.oneWay,
               value: 0.19,
             },
             {
-              typeSMS: TypeSMS.twoWay,
+              typeSMS: TypeSMS.flash,
               typeRoute: TypeRoute.shortCode,
-              typeShot: TypeShot.standard,
+              typeShot: TypeShot.oneWay,
               value: 0.15,
             },
           ],

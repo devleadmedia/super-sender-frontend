@@ -1,47 +1,69 @@
+import { useRoles } from 'src/composables/useRoles'
 import { Roles } from 'src/enums/Roles.enum'
 
-export const menuOptions = [
+const { isAdmin } = useRoles()
+
+interface IMenuOptions {
+  icon: string
+  name: string
+  separator: boolean
+  to: { name: string }
+  roles: Roles[]
+  children: IMenuOptions[]
+  disable?: boolean
+}
+
+export const menuOptions: IMenuOptions[] = [
   {
     icon: 'message',
-    name: 'Mensagens',
+    name: 'SMS',
     separator: false,
-    to: { name: 'site' },
+    to: { name: '' },
     roles: [Roles.admin, Roles.client],
+    children: [
+      {
+        icon: 'message',
+        name: 'Mensagens',
+        separator: false,
+        to: { name: 'home' },
+        roles: [Roles.admin, Roles.client],
+        children: [],
+      },
+      {
+        icon: 'contacts',
+        name: 'Contatos',
+        separator: false,
+        to: { name: 'home' },
+        roles: [],
+        children: [],
+      },
+      {
+        icon: 'send',
+        name: 'Disparos',
+        separator: false,
+        to: { name: 'home' },
+        roles: [],
+        children: [],
+      },
+    ],
   },
   {
-    icon: 'contacts',
-    name: 'Contatos',
+    icon: 'mail',
+    name: 'Email',
     separator: false,
-    to: { name: 'site' },
+    disable: true,
+    to: { name: 'dsadas' },
     roles: [],
+    children: [],
   },
   {
-    icon: 'send',
-    name: 'Disparos',
+    icon: 'phone',
+    name: 'Whatsapp',
     separator: true,
-    to: { name: 'site' },
+    disable: true,
+    to: { name: 'dasd' },
     roles: [],
-  },
-  {
-    icon: 'price_change',
-    name: 'Gerenciar preços',
-    separator: false,
-    to: { name: 'priceManagement' },
-    roles: [],
-  },
-  {
-    icon: 'manage_accounts',
-    name: 'Remetentes',
-    separator: false,
-    to: { name: 'site' },
-    roles: [],
-  },
-  {
-    icon: 'people',
-    name: 'Usuários',
-    separator: true,
-    to: { name: 'user' },
-    roles: [],
+    children: [],
   },
   {
     icon: 'local_atm',
@@ -49,26 +71,46 @@ export const menuOptions = [
     separator: false,
     to: { name: 'tablePrice' },
     roles: [],
+    children: [],
   },
   {
     icon: 'schedule',
     name: 'Extrato',
     separator: false,
-    to: { name: 'historic' },
+    to: { name: 'statement' },
     roles: [],
-  },
-  {
-    icon: 'account_balance_wallet',
-    name: 'Minha carteira',
-    separator: false,
-    to: { name: 'myWallet' },
-    roles: [],
+    children: [],
   },
   {
     icon: 'account_circle',
     name: 'Perfil',
-    separator: false,
+    separator: isAdmin(),
     to: { name: 'profile' },
     roles: [],
+    children: [],
+  },
+  {
+    icon: 'price_change',
+    name: 'Gerenciar preços',
+    separator: false,
+    to: { name: 'priceManagement' },
+    roles: [Roles.admin],
+    children: [],
+  },
+  {
+    icon: 'manage_accounts',
+    name: 'Remetentes',
+    separator: false,
+    to: { name: 'site' },
+    roles: [Roles.admin],
+    children: [],
+  },
+  {
+    icon: 'people',
+    name: 'Usuários',
+    separator: false,
+    to: { name: 'user' },
+    roles: [Roles.admin],
+    children: [],
   },
 ]

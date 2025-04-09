@@ -1,13 +1,21 @@
-import type { TypeRoute } from 'src/enums/shot/TypeRoute.enum'
-import type { TypeShot } from 'src/enums/shot/TypeShot.enum'
-import type { TypeSMS } from 'src/enums/shot/TypeSMS.enum'
+import type {
+  TypeRoute,
+  TypeShot,
+  TypeSMS,
+} from 'src/enums/shot/sms/TypesSMS.enum'
 
-export interface ITablePrice {
-  name: string
-  data: ITablePriceData[]
+export interface ITablePriceResult {
+  tableSMS: ITablePrice<IDataSMS>[]
+  tableEmail: ITablePrice<undefined>[]
+  tableWhatsapp: ITablePrice<undefined>[]
 }
 
-export interface ITablePriceData {
+export interface ITablePrice<T> {
+  name: string
+  data: T[]
+}
+
+export interface IDataSMS {
   typeShot: TypeShot
   typeSMS: TypeSMS
   typeRoute: TypeRoute

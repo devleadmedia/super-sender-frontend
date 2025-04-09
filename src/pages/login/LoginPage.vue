@@ -6,7 +6,7 @@
       style="max-width: 500px"
     >
       <q-card-section class="text-center">
-        <q-img :src="logo" width="186px" /> 
+        <q-img :src="logo" width="186px" />
         <div class="text-caption">Entre com os seus dados para começar</div>
       </q-card-section>
       <q-card-section class="column gap-sm">

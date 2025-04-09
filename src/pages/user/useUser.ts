@@ -1,13 +1,15 @@
 import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
 import type { Roles } from 'src/enums/Roles.enum'
-import type { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
+import type { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
 import type { Status } from 'src/enums/Status.enum'
 import type { IUser } from 'src/types/user/IUser.type'
+import type { ShippingType } from 'src/enums/ShippingType.enum'
 import { cloneDeep } from 'src/utils/clone.util'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as UserService from 'src/services/user.service'
+import { shootingPermissionsOptions } from 'src/constants/shot/shootingPermissions.const'
 
 interface IState {
   visiblePassword: boolean
@@ -18,6 +20,7 @@ interface IState {
     email: string
     status: Status
     roles: Roles[]
+    shippingType: ShippingType[]
     shootingPermissions: ShootingPermissions[]
     password: string
     confirmPassword: string
@@ -30,8 +33,10 @@ interface IState {
 
 export function useUser() {
   const initState: IState = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    form: {} as any,
+    form: {
+      shippingType: [],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any,
     visiblePassword: false,
     alterPassword: false,
     actionsData: [],
@@ -52,7 +57,7 @@ export function useUser() {
   }
 
   const state = ref<IState>(cloneDeep(initState))
-  const { createDialog, toggleDialog } = useDialog()
+  const { createDialog, toggleDialog, dialogIsOpen } = useDialog()
   const { loaderStatus } = useLoader()
 
   async function fetchList() {
@@ -143,21 +148,40 @@ export function useUser() {
 
   function openActionDialog(action: 'delete' | 'disable') {
     state.value.actionType = action
-
     toggleDialog(dialog.action)
   }
+
+  function clearShootingPermissions(value: ShippingType[]) {
+    const shooting = shootingPermissionsOptions.filter((sp) =>
+      state.value.form.shootingPermissions.includes(sp.value),
+    )
+
+    state.value.form.shootingPermissions = shooting
+      .filter((sp) => value.includes(sp.type))
+      .map((sp) => sp.value)
+  }
+
+  const currentShootingPermissionsOptions = computed(() => {
+    return shootingPermissionsOptions.filter((sp) =>
+      state.value.form.shippingType.includes(sp.type),
+    )
+  })
 
   return {
     state,
     dialog,
     loader,
+    currentShootingPermissionsOptions,
     save,
     fetchList,
+    toggleDialog,
+    dialogIsOpen,
     createDialog,
     loaderStatus,
     confirmAction,
     openEditDialog,
     clearEditDialog,
     openActionDialog,
+    clearShootingPermissions,
   }
 }

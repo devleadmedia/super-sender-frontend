@@ -1,5 +1,6 @@
 import type { Roles } from 'src/enums/Roles.enum'
-import type { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
+import type { ShippingType } from 'src/enums/ShippingType.enum'
+import type { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
 import type { Status } from 'src/enums/Status.enum'
 
 export interface IUser {
@@ -10,4 +11,5 @@ export interface IUser {
   status: Status
   roles: Roles[]
   shootingPermissions: ShootingPermissions[]
+  shippingType: ShippingType[]
 }

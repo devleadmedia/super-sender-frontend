@@ -1,5 +1,5 @@
 import type { Roles } from 'src/enums/Roles.enum'
-import type { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
+import type { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
 
 export interface IUserAuth {
   name: string

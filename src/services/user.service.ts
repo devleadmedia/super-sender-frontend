@@ -1,6 +1,7 @@
 import { api } from 'src/boot/axios'
 import { Roles } from 'src/enums/Roles.enum'
-import { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
+import { ShippingType } from 'src/enums/ShippingType.enum'
+import { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
 import { Status } from 'src/enums/Status.enum'
 import type { IUser } from 'src/types/user/IUser.type'
 import { fakePromise } from 'src/utils/fakePromise.util'
@@ -22,6 +23,7 @@ export async function getAll(): Promise<IUser[]> {
       ],
       status: Status.active,
       balance: 1203,
+      shippingType: [ShippingType.sms]
     },
     {
       id: '2',
@@ -31,6 +33,17 @@ export async function getAll(): Promise<IUser[]> {
       shootingPermissions: [],
       status: Status.active,
       balance: 204.3,
+      shippingType: [ShippingType.email]
+    },
+    {
+      id: '3',
+      name: 'Nome 3',
+      email: 'mail.com',
+      roles: [Roles.admin],
+      shootingPermissions: [],
+      status: Status.active,
+      balance: 561.45,
+      shippingType: [ShippingType.whatsapp]
     },
   ]
 }

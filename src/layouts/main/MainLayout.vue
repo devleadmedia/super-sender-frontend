@@ -7,15 +7,7 @@
 
         <q-space />
 
-        <q-chip
-          square
-          :label="
-            state.user.balance.toLocaleString('pt-br', {
-              style: 'currency',
-              currency: 'BRL',
-            })
-          "
-        />
+        <q-chip square :label="moneyFormat(state.user.balance)" />
 
         <q-btn icon="add" color="primary" size="sm" style="width: 20px">
           <q-tooltip :delay="1000">Adicionar saldo</q-tooltip>
@@ -23,10 +15,8 @@
 
         <q-item :clickable="false">
           <q-btn round unelevated>
-            <q-avatar size="44px" class="bg-theme-paper">
-              <q-img
-                src="https://lh3.googleusercontent.com/p/AF1QipP36Nj0HPQ_oWR7OcGUDkJ6hYLd8dIqG5v9xtTO=s680-w680-h510"
-              />
+            <q-avatar size="38px" class="bg-theme-paper">
+              <q-icon name="person" size="24px" />
             </q-avatar>
           </q-btn>
           <q-menu class="q-card--bordered shadow-0">
@@ -97,6 +87,7 @@ import { useLocalStorage } from 'src/composables/useLocalStorage'
 import ContentDrawer from './components/ContentDrawer.vue'
 import { useInterface } from 'src/composables/useInterface'
 import { LocalStorageKey } from 'src/enums/LocalStorageKey.enum'
+import { moneyFormat } from 'src/utils/money.util'
 
 const { logout } = useAuth()
 const { getLocalStorage } = useLocalStorage()
@@ -173,17 +164,6 @@ onMounted(() => {
 })
 </script>
 <style lang="scss">
-/*
-.q-expansion-item__content {
-  margin-left: 27px;
-  border-left: 1px solid rgba(128, 128, 128, 0.4);
-
-  .q-expansion-item__content {
-    margin-left: 19px;
-  }
-}
-*/
-
 .header-layout-main {
   background: rgba(0, 0, 0, 0.075);
   backdrop-filter: blur(5px);
