@@ -20,3 +20,10 @@ export function positive(value: number) {
 export function isNumericRule(value: number) {
   return IsValid.isNumeric(value) || NumberForm.number()
 }
+
+export function numberLengthRule(value: number, expectedCount: number) {
+  return (
+    IsValid.numberLength(value, expectedCount) ||
+    NumberForm.numberLength(expectedCount)
+  )
+}

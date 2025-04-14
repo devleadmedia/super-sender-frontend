@@ -56,7 +56,6 @@
       :name-items="state.actionsData.map((item) => item.name)"
       prefix="os"
       title="usuários"
-      @clear-dialog="clearEditDialog"
       @confirm-action="confirmAction"
     />
 
@@ -83,7 +82,7 @@
           <div class="col-12 col-md-6">
             <q-input
               label="Email"
-              :rules="[requiredRule]"
+              :rules="[requiredRule, emailRule]"
               v-bind="$vInput"
               v-model="state.form.email"
             />
@@ -113,7 +112,7 @@
             </q-select>
           </div>
 
-          <div class="col-12">
+          <div class="col-12" v-if="!state.form.roles.includes(Roles.admin)">
             <q-select
               label="Tipos de envio"
               v-model="state.form.shippingType"
@@ -130,7 +129,7 @@
             </q-select>
           </div>
 
-          <div class="col-12">
+          <div class="col-12" v-if="!state.form.roles.includes(Roles.admin)">
             <q-select
               label="Permissões de disparo"
               v-model="state.form.shootingPermissions"
@@ -221,6 +220,8 @@ import {
 import { rolesOptions } from 'src/constants/roles.const'
 import { statusOptions } from 'src/constants/status.const'
 import { shippingTypeOptions } from 'src/constants/shippingType.const'
+import { Roles } from 'src/enums/Roles.enum'
+import { emailRule } from 'src/validations/form-rules/stringRules.util'
 
 const {
   state,

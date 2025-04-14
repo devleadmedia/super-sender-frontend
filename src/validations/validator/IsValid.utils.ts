@@ -31,14 +31,18 @@ export class IsValid {
   }
 
   /**
- * Compara duas strings de senha para verificar se são iguais.
- * @param {string} value - A primeira senha.
- * @param {string} compare - A segunda senha para comparação.
- * @param {boolean} [error=false] - Se verdadeiro, lança um erro caso as senhas não sejam iguais.
- * @returns {boolean} Retorna `true` se as senhas forem iguais, caso contrário `false` (ou lança erro se `error` for `true`).
- * @throws {Error} Lança um erro se as senhas não forem iguais e `error` for `true`.
- */
-  static equalPassword(value: string, compare: string,error?: boolean): boolean {
+   * Compara duas strings de senha para verificar se são iguais.
+   * @param {string} value - A primeira senha.
+   * @param {string} compare - A segunda senha para comparação.
+   * @param {boolean} [error=false] - Se verdadeiro, lança um erro caso as senhas não sejam iguais.
+   * @returns {boolean} Retorna `true` se as senhas forem iguais, caso contrário `false` (ou lança erro se `error` for `true`).
+   * @throws {Error} Lança um erro se as senhas não forem iguais e `error` for `true`.
+   */
+  static equalPassword(
+    value: string,
+    compare: string,
+    error?: boolean,
+  ): boolean {
     const isValid = value == compare
     if (!isValid && error) throw new Error('Invalid URL format')
     return isValid
@@ -291,6 +295,27 @@ export class IsValid {
     let isValid = false
     isValid = typeof value == 'number'
     if (!isValid && error) throw new Error(NumberForm.number())
+
+    return isValid
+  }
+
+  /**
+   * Verifica se um número possui a quantidade esperada de dígitos numéricos.
+   *
+   * @param {number} value - O valor a ser verificado. Pode ser um número ou string numérica.
+   * @param {number} expectedCount - A quantidade esperada de dígitos numéricos.
+   * @returns {boolean} Retorna true se o número de dígitos corresponder ao esperado, caso contrário, false.
+   */
+  static numberLength(
+    value: number,
+    expectedCount: number,
+    error?: boolean,
+  ): boolean {
+    let isValid = false
+    const digitsOnly = value.toString().replace(/[^0-9]/g, '')
+    isValid = digitsOnly.length === expectedCount
+
+    if (!isValid && error) throw new Error(NumberForm.numberLength(expectedCount))
 
     return isValid
   }

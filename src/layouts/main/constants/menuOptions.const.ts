@@ -1,7 +1,4 @@
-import { useRoles } from 'src/composables/useRoles'
 import { Roles } from 'src/enums/Roles.enum'
-
-const { isAdmin } = useRoles()
 
 interface IMenuOptions {
   icon: string
@@ -69,41 +66,84 @@ export const menuOptions: IMenuOptions[] = [
     icon: 'local_atm',
     name: 'Preços',
     separator: false,
-    to: { name: 'tablePrice' },
+    to: { name: '' },
     roles: [],
-    children: [],
-  },
-  {
-    icon: 'schedule',
-    name: 'Extrato',
-    separator: false,
-    to: { name: 'statement' },
-    roles: [],
-    children: [],
+    children: [
+      {
+        icon: '',
+        name: 'Gerenciar preços',
+        separator: false,
+        to: { name: 'priceManagement' },
+        roles: [Roles.admin],
+        children: [],
+      },
+      {
+        icon: '',
+        name: 'Tabela de preços',
+        separator: false,
+        to: { name: 'tablePrice' },
+        roles: [],
+        children: [],
+      },
+    ],
   },
   {
     icon: 'account_circle',
     name: 'Perfil',
-    separator: isAdmin(),
+    separator: false,
     to: { name: 'profile' },
     roles: [],
-    children: [],
-  },
-  {
-    icon: 'price_change',
-    name: 'Gerenciar preços',
-    separator: false,
-    to: { name: 'priceManagement' },
-    roles: [Roles.admin],
-    children: [],
+    children: [
+      {
+        icon: '',
+        name: 'Meus dados',
+        separator: false,
+        to: { name: 'profile' },
+        roles: [],
+        children: [],
+      },
+      {
+        icon: '',
+        name: 'Extrato',
+        separator: false,
+        to: { name: 'statement' },
+        roles: [],
+        children: [],
+      },
+      {
+        icon: '',
+        name: 'Comprar créditos',
+        separator: false,
+        to: { name: 'buyCredit' },
+        roles: [],
+        children: [],
+      },
+    ],
   },
   {
     icon: 'manage_accounts',
     name: 'Remetentes',
     separator: false,
-    to: { name: 'site' },
+    to: { name: '' },
     roles: [Roles.admin],
-    children: [],
+    children: [
+      {
+        icon: '',
+        name: 'Gerenciar remetentes',
+        separator: false,
+        to: { name: 'senderManagement' },
+        roles: [],
+        children: [],
+      },
+      {
+        icon: '',
+        name: 'Remetentes por cliente',
+        separator: false,
+        to: { name: 'senderByClient' },
+        roles: [],
+        children: [],
+      },
+    ],
   },
   {
     icon: 'people',

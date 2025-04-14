@@ -23,7 +23,7 @@ export async function getAll(): Promise<IUser[]> {
       ],
       status: Status.active,
       balance: 1203,
-      shippingType: [ShippingType.sms]
+      shippingType: [ShippingType.sms, ShippingType.email]
     },
     {
       id: '2',

@@ -30,9 +30,15 @@
 
     <table-price-skeleton v-if="loaderStatus(loader.fetch)" />
     <template v-else>
-      <table-SMS v-if="isActive(ShippingType.sms)" :tables="state.listSMS" />
-      <table-email v-if="isActive(ShippingType.email)" />
-      <table-whatsapp v-if="isActive(ShippingType.whatsapp)" />
+      <TableSMS v-if="isActive(ShippingType.sms)" :tables="state.listSMS" />
+      <TableEmail
+        v-if="isActive(ShippingType.email)"
+        :tables="state.listEmail"
+      />
+      <TableWhatsapp
+        v-if="isActive(ShippingType.whatsapp)"
+        :tables="state.listWhatsapp"
+      />
     </template>
   </q-page>
 </template>
@@ -41,7 +47,12 @@
 import { onMounted, ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as PriceService from 'src/services/price.service'
-import type { IDataSMS, ITablePrice } from 'src/types/price/ITablePrice.type'
+import type {
+  IDataEmail,
+  IDataSMS,
+  IDataWhatsapp,
+  ITablePrice,
+} from 'src/types/price/ITablePrice.type'
 import TablePriceSkeleton from './components/TablePriceSkeleton.vue'
 import { useLoader } from 'src/composables/useLoader'
 import { ShippingType } from 'src/enums/ShippingType.enum'
@@ -52,8 +63,8 @@ import TableWhatsapp from './components/TableWhatsapp.vue'
 interface IState {
   shippingType: ShippingType
   listSMS: ITablePrice<IDataSMS>[]
-  listEmail: ITablePrice<undefined>[]
-  listWhatsapp: ITablePrice<undefined>[]
+  listEmail: ITablePrice<IDataEmail>[]
+  listWhatsapp: ITablePrice<IDataWhatsapp>[]
 }
 
 const state = ref<IState>({

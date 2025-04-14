@@ -2,27 +2,36 @@ import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
 import type { Status } from 'src/enums/Status.enum'
 import type { IPrice } from 'src/types/price/IPrice.type'
-import type { IDataSMS, ITablePrice } from 'src/types/price/ITablePrice.type'
-import type { IBasicEntity } from 'src/types/IBasicEntity.type'
+import type {
+  IDataEmail,
+  IDataSMS,
+  IDataWhatsapp,
+  ITablePrice,
+} from 'src/types/price/ITablePrice.type'
 import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as PriceService from 'src/services/price.service'
 import * as UserService from 'src/services/user.service'
 import { cloneDeep } from 'src/utils/clone.util'
-import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
+import type { ShippingType } from 'src/enums/ShippingType.enum'
+import type { IUser } from 'src/types/user/IUser.type'
+import { dialog, initState, loader } from './priceManagement.const'
 
-interface IState {
+export interface IState {
   visiblePassword: boolean
   alterPassword: boolean
   options: {
-    clients: IBasicEntity<string>[]
+    clients: IUser[]
   }
   form: {
     id: string
-    name: string
+    shippingTypeStep: ShippingType
+    shippingType: ShippingType[]
     client: string
     status: Status
-    tablePrice: ITablePrice<IDataSMS>[]
+    tablePriceSMS: ITablePrice<IDataSMS>[]
+    tablePriceEmail: ITablePrice<IDataEmail>[]
+    tablePriceWhatsapp: ITablePrice<IDataWhatsapp>[]
   }
   list: IPrice[]
   filter: string
@@ -31,80 +40,9 @@ interface IState {
 }
 
 export function usePriceManagement() {
-  const initState: IState = {
-    form: {
-      tablePrice: [
-        {
-          name: 'Novo',
-          data: [
-            {
-              typeRoute: TypeRoute.shortCode,
-              typeShot: TypeShot.oneWay,
-              typeSMS: TypeSMS.flash,
-              value: 0,
-            },
-          ],
-        },
-      ],
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any,
-    options: {
-      clients: [],
-    },
-    visiblePassword: false,
-    alterPassword: false,
-    actionsData: [],
-    actionType: 'delete',
-    filter: '',
-    list: [],
-  }
-
-  const dialog = {
-    edit: 'edit-1e12f342f',
-    action: 'action-f3223f',
-  }
-
-  const loader = {
-    list: 'list-1e12f342f',
-    edit: 'edit-1e12f342f',
-    action: 'action-f3223f',
-  }
-
   const state = ref<IState>(cloneDeep(initState))
   const { createDialog, toggleDialog } = useDialog()
   const { loaderStatus } = useLoader()
-
-  function addTablePrice() {
-    const [example] = initState.form.tablePrice
-    state.value.form.tablePrice.push(cloneDeep(example!))
-  }
-
-  function removeTablePrice(tableIdx: number) {
-    if (!state.value.form.tablePrice[tableIdx]) return
-    else
-      state.value.form.tablePrice = state.value.form.tablePrice.filter(
-        (_, idx) => idx != tableIdx,
-      )
-  }
-
-  function addTablePriceItem(tableIdx: number) {
-    if (!state.value.form.tablePrice[tableIdx]) return
-    else
-      state.value.form.tablePrice[tableIdx].data.push({
-        typeRoute: TypeRoute.shortCode,
-        typeShot: TypeShot.oneWay,
-        typeSMS: TypeSMS.flash,
-        value: 0,
-      })
-  }
-
-  function removeTablePriceItem(tableIdx: number, index: number) {
-    if (!state.value.form.tablePrice[tableIdx]) return
-    else
-      state.value.form.tablePrice[tableIdx].data = state.value.form.tablePrice[
-        tableIdx
-      ].data.filter((_, idx) => idx != index)
-  }
 
   async function fetchList() {
     await requester.dispatch({
@@ -123,8 +61,27 @@ export function usePriceManagement() {
 
     await requester.dispatch({
       callback: async () => {
-        if (id) await PriceService.save(id)
-        else await PriceService.create()
+        if (id)
+          await PriceService.save(
+            id,
+            state.value.form.shippingTypeStep,
+            state.value.form.shippingType,
+            state.value.form.client,
+            state.value.form.status,
+            state.value.form.tablePriceSMS,
+            state.value.form.tablePriceEmail,
+            state.value.form.tablePriceWhatsapp,
+          )
+        else
+          await PriceService.create(
+            state.value.form.shippingTypeStep,
+            state.value.form.shippingType,
+            state.value.form.client,
+            state.value.form.status,
+            state.value.form.tablePriceSMS,
+            state.value.form.tablePriceEmail,
+            state.value.form.tablePriceWhatsapp,
+          )
       },
       successCallback: async () => {
         await fetchList()
@@ -162,8 +119,19 @@ export function usePriceManagement() {
   }
 
   function openEditDialog(item?: IPrice) {
-    if (item) state.value.form = cloneDeep({ ...item, client: item.client.id })
-    else clearEditDialog()
+    if (item) {
+      const client = state.value.options.clients.find(
+        (c) => c.id === item.client.id,
+      )!
+      const [firstShippingType] = client.shippingType
+
+      state.value.form = cloneDeep({
+        ...item,
+        client: item.client.id,
+        shippingType: client.shippingType,
+        shippingTypeStep: firstShippingType!,
+      })
+    } else clearEditDialog()
 
     toggleDialog(dialog.edit)
   }
@@ -178,21 +146,40 @@ export function usePriceManagement() {
     toggleDialog(dialog.action)
   }
 
+  function setShippingType(shippingType: ShippingType) {
+    state.value.form.shippingTypeStep = shippingType
+  }
+
+  function updateClient(cliendId: string) {
+    const client = state.value.options.clients.find((c) => c.id === cliendId)!
+    const [firstShippingType] = client.shippingType
+
+    state.value.form.shippingType = client.shippingType
+    state.value.form.shippingTypeStep = firstShippingType!
+  }
+
+  function isActive(shippingType: ShippingType): boolean {
+    return (
+      !!state.value.form.shippingType.length &&
+      state.value.form.shippingTypeStep === shippingType
+    )
+  }
+
   return {
     state,
     dialog,
     loader,
     save,
+    isActive,
     fetchList,
+    updateClient,
+    toggleDialog,
     createDialog,
     loaderStatus,
     confirmAction,
-    addTablePrice,
     openEditDialog,
+    setShippingType,
     clearEditDialog,
-    removeTablePrice,
     openActionDialog,
-    addTablePriceItem,
-    removeTablePriceItem,
   }
 }

@@ -43,7 +43,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'priceManagement',
         name: 'priceManagement',
-        component: () => import('src/pages/price/management/PriceManagement.vue'),
+        component: () =>
+          import('src/pages/price/management/PriceManagement.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
       {
@@ -51,8 +52,29 @@ const routes: RouteRecordRaw[] = [
         name: 'statement',
         component: () => import('src/pages/statement/StatementPage.vue'),
         meta: { requiresAuth: true, roles: [] },
-      }, 
-    ]
+      },
+      {
+        path: 'senderByClient',
+        name: 'senderByClient',
+        component: () =>
+          import('src/pages/sender/sender-by-client/SenderByClient.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'senderManagement',
+        name: 'senderManagement',
+        component: () =>
+          import('src/pages/sender/management/SenderManagement.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'buyCredit',
+        name: 'buyCredit',
+        component: () =>
+          import('src/pages/buy-credit/BuyCredit.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+    ],
   },
   // Always leave this as last one,
   // but you can also remove it
@@ -63,3 +85,30 @@ const routes: RouteRecordRaw[] = [
 ]
 
 export default routes
+
+/*
+Módulo SMS
++ Disparos
+  - Novo Disparo
+  - Agendamentos
+  - Histórico
+    -- Relatórios
+    -- Respostas
+
++ Listas de Contatos
+  - Nova Lista
+  - Listas
+    -- Contatos
+      --- Detalhes do Contato
+
++ Templates de mensagens
+
++ Dashboard
+
++ Meu Perfil
+  - Meus dados
+  - Minha Carteira
+    -- Comprar créditos
+    -- Extrato de consumo
+    -- Tabela de preços
+*/

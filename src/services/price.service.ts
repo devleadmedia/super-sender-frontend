@@ -1,9 +1,16 @@
 import { api } from 'src/boot/axios'
-import type { ITablePriceResult } from 'src/types/price/ITablePrice.type'
+import type {
+  IDataEmail,
+  IDataSMS,
+  IDataWhatsapp,
+  ITablePrice,
+  ITablePriceResult,
+} from 'src/types/price/ITablePrice.type'
 import type { IPrice } from 'src/types/price/IPrice.type'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { Status } from 'src/enums/Status.enum'
 import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
+import type { ShippingType } from 'src/enums/ShippingType.enum'
 
 export async function getTablePrice(): Promise<ITablePriceResult> {
   /* DEVE PESQUISAR USUARIO PELO TOKEN */
@@ -72,13 +79,12 @@ export async function getAll(): Promise<IPrice[]> {
   return [
     {
       id: '1',
-      name: 'Nome 1',
       status: Status.active,
       client: {
         id: '1',
         name: 'Joel',
       },
-      tablePrice: [
+      tablePriceSMS: [
         {
           name: 'SMS',
           data: [
@@ -109,36 +115,73 @@ export async function getAll(): Promise<IPrice[]> {
           ],
         },
       ],
+      tablePriceEmail: [],
+      tablePriceWhatsapp: [],
     },
     {
       id: '2',
-      name: 'Nome 2',
       status: Status.active,
       client: {
-        id: '1',
+        id: '2',
         name: 'Abel',
       },
-      tablePrice: [],
+      tablePriceSMS: [],
+      tablePriceEmail: [],
+      tablePriceWhatsapp: [],
     },
     {
       id: '3',
-      name: 'Nome 3',
       status: Status.inactive,
       client: {
-        id: '1',
+        id: '3',
         name: 'Carlos',
       },
-      tablePrice: [],
+      tablePriceSMS: [],
+      tablePriceWhatsapp: [],
+      tablePriceEmail: [],
     },
   ]
 }
 
-export async function create() {
-  await api.post('/price', {})
+export async function create(
+  shippingTypeStep: ShippingType,
+  shippingType: ShippingType[],
+  clientId: string,
+  status: Status,
+  tablePriceSMS: ITablePrice<IDataSMS>[],
+  tablePriceEmail: ITablePrice<IDataEmail>[],
+  tablePriceWhatsapp: ITablePrice<IDataWhatsapp>[],
+) {
+  await api.post('/price', {
+    shippingTypeStep,
+    shippingType,
+    clientId,
+    status,
+    tablePriceSMS,
+    tablePriceEmail,
+    tablePriceWhatsapp,
+  })
 }
 
-export async function save(id: string) {
-  await api.put(`/price/${id}`, {})
+export async function save(
+  id: string,
+  shippingTypeStep: ShippingType,
+  shippingType: ShippingType[],
+  clientId: string,
+  status: Status,
+  tablePriceSMS: ITablePrice<IDataSMS>[],
+  tablePriceEmail: ITablePrice<IDataEmail>[],
+  tablePriceWhatsapp: ITablePrice<IDataWhatsapp>[],
+) {
+  await api.put(`/price/${id}`, {
+    shippingTypeStep,
+    shippingType,
+    clientId,
+    status,
+    tablePriceSMS,
+    tablePriceEmail,
+    tablePriceWhatsapp,
+  })
 }
 
 export async function deleteItem(ids: string[]) {

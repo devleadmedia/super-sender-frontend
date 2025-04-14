@@ -14,7 +14,7 @@ export async function getAll(userId?: number): Promise<IStatement[]> {
     })
     return data.users
    */
-  
+
   console.log(userId)
 
   const data = [] as IStatement[]
@@ -28,7 +28,7 @@ export async function getAll(userId?: number): Promise<IStatement[]> {
       date: date.toISOString(),
       description: `${v > 0 ? 'Comprou' : 'Gastou'} creditos ${v < 0 ? 'na campanha X' : ''}`,
       value: v,
-      type: shippingTypeOptions[random(0, 2, false)]!.value,
+      type: v > 0 ? null : shippingTypeOptions[random(0, 2, false)]!.value,
     })
   }
 

@@ -7,8 +7,16 @@
           color="accent"
           round
           outline
-          :icon="shippingTypeDictionary[item.type as ShippingType].icon"
-          :title="shippingTypeDictionary[item.type as ShippingType].name"
+          :icon="
+            item.type
+              ? shippingTypeDictionary[item.type as ShippingType].icon
+              : 'attach_money'
+          "
+          :title="
+            item.type
+              ? shippingTypeDictionary[item.type as ShippingType].name
+              : 'attach_money'
+          "
         />
         <span> {{ item.description }} </span>
       </div>

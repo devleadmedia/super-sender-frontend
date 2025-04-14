@@ -6,11 +6,11 @@ import type {
 
 export interface ITablePriceResult {
   tableSMS: ITablePrice<IDataSMS>[]
-  tableEmail: ITablePrice<undefined>[]
-  tableWhatsapp: ITablePrice<undefined>[]
+  tableEmail: ITablePrice<IDataEmail>[]
+  tableWhatsapp: ITablePrice<IDataWhatsapp>[]
 }
 
-export interface ITablePrice<T> {
+export interface ITablePrice<T extends IDataSMS | IDataEmail | IDataWhatsapp> {
   name: string
   data: T[]
 }
@@ -19,5 +19,13 @@ export interface IDataSMS {
   typeShot: TypeShot
   typeSMS: TypeSMS
   typeRoute: TypeRoute
+  value: number
+}
+
+export interface IDataEmail {
+  value: number
+}
+
+export interface IDataWhatsapp {
   value: number
 }

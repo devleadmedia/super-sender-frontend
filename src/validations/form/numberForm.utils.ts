@@ -38,4 +38,8 @@ export class NumberForm {
   static number(): string {
     return 'Deve ser do tipo numérico'
   }
+
+  static numberLength(value: number): string {
+    return `Deve conter ${value} números`
+  }
 }

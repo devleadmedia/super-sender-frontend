@@ -21,6 +21,7 @@ interface IState {
       to: string
       from: string
     }
+    recharge: boolean
     shippingType?: ShippingType
   }
 }
@@ -33,6 +34,7 @@ export function useStatement() {
         from: '',
         to: '',
       },
+      recharge: false,
     },
     isGrid: true,
     list: [],
@@ -73,7 +75,7 @@ export function useStatement() {
   }
 
   function filterToList(list: IStatement[]) {
-    const { rangeDate, search, shippingType } = state.value.filter
+    const { rangeDate, search, shippingType, recharge } = state.value.filter
 
     const startDate = new Date(rangeDate.from.split('/').reverse().join('-'))
     const endDate = new Date(rangeDate.to.split('/').reverse().join('-'))
@@ -88,8 +90,9 @@ export function useStatement() {
       const matchRangeDate = rangeDate.to
         ? itemDate >= startDate && itemDate <= endDate
         : true
+      const matchRecharge = recharge ? item.value > 0 : true
 
-      return matchShippingType && matchSearch && matchRangeDate
+      return matchShippingType && matchSearch && matchRangeDate && matchRecharge
     })
   }
 

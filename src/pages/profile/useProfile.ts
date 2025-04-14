@@ -4,6 +4,7 @@ import requester from 'src/helpers/requester/Requester.helper'
 import * as ProfileService from 'src/services/profile.service'
 import { useLocalStorage } from 'src/composables/useLocalStorage'
 import { LocalStorageKey } from 'src/enums/LocalStorageKey.enum'
+import { cloneDeep } from 'src/utils/clone.util'
 
 interface IState {
   visiblePassword: boolean
@@ -25,7 +26,7 @@ export function useProfile() {
     visiblePassword: false,
   }
 
-  const state = ref<IState>(initState)
+  const state = ref<IState>(cloneDeep(initState))
 
   const loader = {
     save: 'save-213235r34g',

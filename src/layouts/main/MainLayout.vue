@@ -10,7 +10,7 @@
         <q-chip square :label="moneyFormat(state.user.balance)" />
 
         <q-btn icon="add" color="primary" size="sm" style="width: 20px">
-          <q-tooltip :delay="1000">Adicionar saldo</q-tooltip>
+          <q-tooltip :delay="1000">Comprar créditos</q-tooltip>
         </q-btn>
 
         <q-item :clickable="false">

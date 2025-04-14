@@ -40,6 +40,8 @@
           v-bind="$vSelect"
           v-model="state.filter.shippingType"
         />
+
+        <q-toggle v-model="state.filter.recharge" label="Recarga de creditos"></q-toggle>
       </div>
 
       <div class="flex items-center gap-md"></div>

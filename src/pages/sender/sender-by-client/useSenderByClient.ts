@@ -1,71 +1,71 @@
 import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
-import type { Roles } from 'src/enums/Roles.enum'
-import type { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
 import type { Status } from 'src/enums/Status.enum'
+import type { ISenderByClient } from 'src/types/sender/ISenderByClient.type'
 import type { IUser } from 'src/types/user/IUser.type'
-import type { ShippingType } from 'src/enums/ShippingType.enum'
+import type { ISender } from 'src/types/sender/ISender.type'
 import { cloneDeep } from 'src/utils/clone.util'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
+import * as SenderByClientService from 'src/services/sender/sender-for-client.service'
 import * as UserService from 'src/services/user.service'
-import { shootingPermissionsOptions } from 'src/constants/shot/shootingPermissions.const'
+import * as SenderService from 'src/services/sender/sender.service'
 
 interface IState {
-  visiblePassword: boolean
-  alterPassword: boolean
   form: {
     id?: string
-    name: string
-    email: string
+    client: string
+    senders: ISender[]
     status: Status
-    roles: Roles[]
-    shippingType: ShippingType[]
-    shootingPermissions: ShootingPermissions[]
-    password: string
-    confirmPassword: string
   }
-  list: IUser[]
+  list: ISenderByClient[]
   filter: string
   actionType: 'delete' | 'disable'
-  actionsData: IUser[]
+  actionsData: ISenderByClient[]
+  options: {
+    clients: IUser[]
+    senders: ISender[]
+  }
 }
 
-export function useUser() {
+export function useSenderByClient() {
   const initState: IState = {
+    list: [],
     form: {
-      roles: [],
-      shippingType: [],
-      shootingPermissions: [],
+      senders: [],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
-    visiblePassword: false,
-    alterPassword: false,
+    options: {
+      clients: [],
+      senders: [],
+    },
     actionsData: [],
     actionType: 'delete',
     filter: '',
-    list: [],
   }
 
   const dialog = {
-    edit: 'edit-1e12f342f',
-    action: 'action-f3223f',
+    edit: 'edit-f5h56j563',
+    action: 'action-dasdd24h5',
   }
 
   const loader = {
-    list: 'list-1e12f342f',
-    edit: 'edit-1e12f342f',
-    action: 'action-f3223f',
+    list: 'list-f5h56j563',
+    edit: 'edit-f5h56j563',
+    action: 'action-dasdd24h5',
   }
 
   const state = ref<IState>(cloneDeep(initState))
-  const { createDialog, toggleDialog, dialogIsOpen } = useDialog()
+
   const { loaderStatus } = useLoader()
+  const { toggleDialog } = useDialog()
 
   async function fetchList() {
     await requester.dispatch({
       callback: async () => {
-        state.value.list = await UserService.getAll()
+        state.value.options.clients = await UserService.getAll()
+        state.value.options.senders = await SenderService.getAll()
+        state.value.list = await SenderByClientService.getAll()
       },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível buscar os usuários',
@@ -79,22 +79,16 @@ export function useUser() {
     await requester.dispatch({
       callback: async () => {
         if (id)
-          await UserService.save(
+          await SenderByClientService.save(
             id,
-            state.value.form.email,
-            state.value.form.name,
-            state.value.form.password,
             state.value.form.status,
-            state.value.form.roles,
-            state.value.form.shootingPermissions,
+            state.value.form.client,
+            state.value.form.senders.map((s) => s.id),
           )
         else
-          await UserService.create(
-            state.value.form.email,
-            state.value.form.name,
-            state.value.form.roles,
-            state.value.form.shootingPermissions,
-            state.value.form.password,
+          await SenderByClientService.create(
+            state.value.form.client,
+            state.value.form.senders.map((s) => s.id),
           )
       },
       successCallback: async () => {
@@ -117,8 +111,8 @@ export function useUser() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await UserService.deleteItem(ids)
-        if (actionType == 'disable') await UserService.disable(ids)
+        if (actionType == 'delete') await SenderByClientService.deleteItem(ids)
+        if (actionType == 'disable') await SenderByClientService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -132,58 +126,41 @@ export function useUser() {
     })
   }
 
-  function openEditDialog(item?: IUser) {
-    if (item)
-      state.value.form = {
+  function openEditDialog(item?: ISenderByClient) {
+    if (item) {
+      state.value.form = cloneDeep({
         ...item,
-        confirmPassword: '',
-        password: '',
-      }
-    else clearEditDialog()
+        client: item.client.id,
+        senders: state.value.options.senders.filter((s) =>
+          item.senderIds.includes(s.id),
+        ),
+      })
+    } else clearEditDialog()
 
     toggleDialog(dialog.edit)
   }
 
   function clearEditDialog() {
-    state.value.form = cloneDeep(initState.form)
+    state.value.form = cloneDeep({ ...initState.form })
   }
 
   function openActionDialog(action: 'delete' | 'disable') {
     state.value.actionType = action
+
     toggleDialog(dialog.action)
   }
-
-  function clearShootingPermissions(value: ShippingType[]) {
-    const shooting = shootingPermissionsOptions.filter((sp) =>
-      state.value.form.shootingPermissions.includes(sp.value),
-    )
-
-    state.value.form.shootingPermissions = shooting
-      .filter((sp) => value.includes(sp.type))
-      .map((sp) => sp.value)
-  }
-
-  const currentShootingPermissionsOptions = computed(() => {
-    return shootingPermissionsOptions.filter((sp) =>
-      state.value.form.shippingType.includes(sp.type),
-    )
-  })
 
   return {
     state,
     dialog,
     loader,
-    currentShootingPermissionsOptions,
     save,
     fetchList,
-    toggleDialog,
-    dialogIsOpen,
-    createDialog,
     loaderStatus,
+    toggleDialog,
     confirmAction,
+    openActionDialog,
     openEditDialog,
     clearEditDialog,
-    openActionDialog,
-    clearShootingPermissions,
   }
 }

@@ -32,7 +32,7 @@
           clickable
           v-ripple
           icon
-          to="/app/advertiser"
+          :to="itemChild.to"
         >
           <div class="text-h5 q-mr-sm">•</div>
           <q-item-section>

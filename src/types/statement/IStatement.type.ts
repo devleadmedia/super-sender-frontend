@@ -4,6 +4,6 @@ export interface IStatement {
   id: string
   description: string
   date: string
-  type: ShippingType
+  type: ShippingType | null
   value: number
 }
