@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Gerenciar preços</h1>
+    <h1 class="text-h5">Comprar créditos</h1>
 
     <q-card v-bind="$vCard">
       <q-form @submit="save">
