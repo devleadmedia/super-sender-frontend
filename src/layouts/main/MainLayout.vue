@@ -9,7 +9,13 @@
 
         <q-chip square :label="moneyFormat(state.user.balance)" />
 
-        <q-btn icon="add" color="primary" size="sm" style="width: 20px">
+        <q-btn
+          icon="add"
+          color="primary"
+          size="sm"
+          style="width: 20px"
+          @click="router.push({ name: 'buyCredit' })"
+        >
           <q-tooltip :delay="1000">Comprar créditos</q-tooltip>
         </q-btn>
 
@@ -88,10 +94,12 @@ import ContentDrawer from './components/ContentDrawer.vue'
 import { useInterface } from 'src/composables/useInterface'
 import { LocalStorageKey } from 'src/enums/LocalStorageKey.enum'
 import { moneyFormat } from 'src/utils/money.util'
+import { useRouter } from 'vue-router'
 
 const { logout } = useAuth()
 const { getLocalStorage } = useLocalStorage()
 const { toggleTheme, compactToggle } = useInterface()
+const router = useRouter()
 
 defineOptions({
   name: 'MainLayout',
