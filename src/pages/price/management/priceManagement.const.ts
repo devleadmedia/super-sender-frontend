@@ -52,13 +52,6 @@ export const loader = {
 
 export const priceManagementTableColumns: QTableColumn[] = [
   {
-    label: 'Nome',
-    field: 'name',
-    name: 'name',
-    sortable: true,
-    align: 'left',
-  },
-  {
     label: 'Cliente',
     field: (row) => row.client.name,
     name: 'client',

@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Remetentes</h1>
+    <h1 class="text-h5">Mensagens</h1>
 
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
@@ -23,19 +23,27 @@
       selection="multiple"
       v-model:selected="state.actionsData"
       :rows="state.list"
-      :columns="senderTableColumns"
+      :columns="messageSMSTableColumns"
       :filter="state.filter"
       :loading="loaderStatus(loader.list)"
       :rows-per-page-options="[20]"
     >
       <template #top-right>
         <action-header
-          label-new-entity="Novos remetentes"
+          label-new-entity="Nova mensagem"
           :has-active="!state.actionsData.length"
           :loader-id="loader.list"
           @open-action-dialog="openActionDialog"
-          @open-edit-dialog="openCreateDialog"
-        />
+          @open-edit-dialog="openEditDialog"
+        >
+          <template #before>
+            <q-btn
+              @click="openTriggerDialog"
+              label="Trigger Words"
+              color="secondary"
+            />
+          </template>
+        </action-header>
       </template>
       <template #body-cell-status="props">
         <status-row :props="props" />
@@ -53,59 +61,75 @@
       :action-type="state.actionType"
       :dialog-id="dialog.action"
       :loader-action-id="loader.action"
-      :name-items="
-        state.actionsData.map((item) => `(${item.ddd}) ${item.number}`)
-      "
+      :name-items="state.actionsData.map((item) => item.title)"
       prefix="as"
-      title="associações"
+      title="mensagens"
       @confirm-action="confirmAction"
     />
 
-    <v-dialog :dialog-id="dialog.create" @clear-dialog="clearCreateDialog">
-      <template #default>
-        <q-card
-          v-bind="$vCard"
-          style="max-width: 500px"
-          class="full-width"
-          bordered
-        >
+    <v-dialog :dialog-id="dialog.triggerWord">
+      <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
+        <q-form @submit="save">
           <q-card-section class="q-py-none q-pt-sm">
-            <h6 class="text-h6 q-my-none">Editar remetente</h6>
-
-            <q-uploader
-              class="shadow-0 q-my-md full-width"
-              bordered
-              @added="addSenderFile"
-              max-files="1"
-              hide-upload-btn
-              @removed="removeSenderFile"
-              accept=".xlsx"
-            />
+            <h6 class="text-h6 q-my-none">Trigger Words</h6>
           </q-card-section>
 
-          <q-separator />
+          <q-card-section>
+            <q-input
+              v-bind="$vInput"
+              debounce="300"
+              placeholder="Pesquisar"
+              v-model="state.triggerSearch"
+            >
+              <template #append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </q-card-section>
 
+          <q-card-section>
+            <q-scroll-area
+              visible
+              :thumb-style="{
+                borderRadius: '7px',
+                backgroundColor: 'grey',
+                width: '8px',
+                opacity: '0.75',
+              }"
+              :bar-style="{
+                right: '0px',
+                borderRadius: '9px',
+                backgroundColor: 'grey',
+                width: '8px',
+                opacity: '0.2',
+              }"
+              style="height: 600px"
+            >
+              <div
+                v-for="(item, idx) in triggerWordList"
+                :key="idx"
+                class="q-mr-sm"
+              >
+                <p class="q-mb-none">{{ item?.category }}</p>
+                <q-separator class="q-my-sm" />
+                <ul class="q-mb-lg">
+                  <li v-for="(word, wordIdx) in item?.data" :key="wordIdx">
+                    {{ word }}
+                  </li>
+                </ul>
+              </div>
+            </q-scroll-area>
+          </q-card-section>
           <q-card-actions align="right">
             <q-btn
               color="default"
               flat
               label="Cancelar"
-              @click="toggleDialog(dialog.create)"
-              :disable="loaderStatus(loader.edit)"
-            />
-
-            <q-btn
-              color="primary"
-              label="Salvar"
-              unelevated
-              type="submit"
-              :disable="!state.formCreate"
-              :loading="loaderStatus(loader.edit)"
-              @click="save"
+              @click="toggleDialog(dialog.triggerWord)"
             />
           </q-card-actions>
-        </q-card>
-      </template>
+        </q-form>
+      </q-card>
     </v-dialog>
 
     <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
@@ -113,35 +137,17 @@
         <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
           <q-form @submit="save">
             <q-card-section class="q-py-none q-pt-sm">
-              <h6 class="text-h6 q-my-none">Editar remetente</h6>
+              <h6 class="text-h6 q-my-none">
+                {{ state.form.id ? 'Editar' : 'Criar' }} mensagem
+              </h6>
             </q-card-section>
 
             <q-card-section class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <q-input
-                  label="DDD"
                   v-bind="$vInput"
-                  v-model="state.form.ddd"
-                  mask="##"
-                  unmasked-value
-                  :rules="[requiredRule, (v) => numberLengthRule(v, 2)]"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  label="Número"
-                  mask="#########"
-                  v-bind="$vInput"
-                  v-model="state.form.number"
-                  unmasked-value
-                  :rules="[requiredRule, (v) => numberLengthRule(v, 9)]"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  label="Operador"
-                  v-bind="$vInput"
-                  v-model="state.form.operator"
+                  label="Titulo"
+                  v-model="state.form.title"
                   :rules="[requiredRule]"
                 />
               </div>
@@ -153,6 +159,9 @@
                   v-model="state.form.status"
                   :options="statusOptions"
                 />
+              </div>
+              <div class="col-12">
+                <message-input v-model="state.form.message" />
               </div>
             </q-card-section>
 
@@ -181,41 +190,32 @@
   </q-page>
 </template>
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { messageSMSTableColumns } from './messageSMS.const'
+import { useMessageSMS } from './useMessageSMS'
 import { requiredRule } from 'src/validations/form-rules/mixedRules.util'
-import { senderTableColumns } from './sender.const'
-import { useSender } from './useSender'
-import VDialog from 'src/components/dialog/VDialog.vue'
-import ActionDialog from 'src/components/dialog/ActionDialog.vue'
 import { statusOptions } from 'src/constants/status.const'
+import ActionDialog from 'src/components/dialog/ActionDialog.vue'
+import VDialog from 'src/components/dialog/VDialog.vue'
 import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 import StatusRow from 'src/components/table/StatusRow.vue'
-import { onMounted } from 'vue'
-import { numberLengthRule } from 'src/validations/form-rules/numberRules.util'
+import MessageInput from './components/MessageInput.vue'
 
 const {
   state,
   loader,
   dialog,
+  triggerWordList,
   save,
   fetchList,
-  loaderStatus,
   toggleDialog,
+  loaderStatus,
   confirmAction,
   openEditDialog,
   clearEditDialog,
-  openCreateDialog,
   openActionDialog,
-  clearCreateDialog,
-} = useSender()
-
-function addSenderFile(files: readonly File[]) {
-  const [file] = files
-  state.value.formCreate = file || null
-}
-
-function removeSenderFile() {
-  state.value.formCreate = null
-}
+  openTriggerDialog,
+} = useMessageSMS()
 
 onMounted(() => fetchList())
 </script>

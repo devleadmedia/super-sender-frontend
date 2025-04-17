@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Remetentes</h1>
+    <h1 class="text-h5">Contatos de SMS</h1>
 
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
@@ -23,18 +23,18 @@
       selection="multiple"
       v-model:selected="state.actionsData"
       :rows="state.list"
-      :columns="senderTableColumns"
+      :columns="messageSMSTableColumns"
       :filter="state.filter"
       :loading="loaderStatus(loader.list)"
       :rows-per-page-options="[20]"
     >
       <template #top-right>
         <action-header
-          label-new-entity="Novos remetentes"
+          label-new-entity="Novo preço"
           :has-active="!state.actionsData.length"
           :loader-id="loader.list"
           @open-action-dialog="openActionDialog"
-          @open-edit-dialog="openCreateDialog"
+          @open-edit-dialog="openEditDialog"
         />
       </template>
       <template #body-cell-status="props">
@@ -53,105 +53,60 @@
       :action-type="state.actionType"
       :dialog-id="dialog.action"
       :loader-action-id="loader.action"
-      :name-items="
-        state.actionsData.map((item) => `(${item.ddd}) ${item.number}`)
-      "
-      prefix="as"
-      title="associações"
+      :name-items="state.actionsData.map((item) => item.title)"
+      prefix="os"
+      title="preços"
       @confirm-action="confirmAction"
     />
-
-    <v-dialog :dialog-id="dialog.create" @clear-dialog="clearCreateDialog">
-      <template #default>
-        <q-card
-          v-bind="$vCard"
-          style="max-width: 500px"
-          class="full-width"
-          bordered
-        >
-          <q-card-section class="q-py-none q-pt-sm">
-            <h6 class="text-h6 q-my-none">Editar remetente</h6>
-
-            <q-uploader
-              class="shadow-0 q-my-md full-width"
-              bordered
-              @added="addSenderFile"
-              max-files="1"
-              hide-upload-btn
-              @removed="removeSenderFile"
-              accept=".xlsx"
-            />
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions align="right">
-            <q-btn
-              color="default"
-              flat
-              label="Cancelar"
-              @click="toggleDialog(dialog.create)"
-              :disable="loaderStatus(loader.edit)"
-            />
-
-            <q-btn
-              color="primary"
-              label="Salvar"
-              unelevated
-              type="submit"
-              :disable="!state.formCreate"
-              :loading="loaderStatus(loader.edit)"
-              @click="save"
-            />
-          </q-card-actions>
-        </q-card>
-      </template>
-    </v-dialog>
 
     <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
       <template #default>
         <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
           <q-form @submit="save">
             <q-card-section class="q-py-none q-pt-sm">
-              <h6 class="text-h6 q-my-none">Editar remetente</h6>
+              <h6 class="text-h6 q-my-none">
+                {{ state.form.id ? 'Editar' : 'Criar' }} contato
+              </h6>
             </q-card-section>
 
             <q-card-section class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <q-input
-                  label="DDD"
                   v-bind="$vInput"
-                  v-model="state.form.ddd"
-                  mask="##"
-                  unmasked-value
-                  :rules="[requiredRule, (v) => numberLengthRule(v, 2)]"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  label="Número"
-                  mask="#########"
-                  v-bind="$vInput"
-                  v-model="state.form.number"
-                  unmasked-value
-                  :rules="[requiredRule, (v) => numberLengthRule(v, 9)]"
-                />
-              </div>
-              <div class="col-12 col-md-6">
-                <q-input
-                  label="Operador"
-                  v-bind="$vInput"
-                  v-model="state.form.operator"
+                  v-model="state.form.title"
+                  label="Titulo"
                   :rules="[requiredRule]"
                 />
               </div>
-              <div class="col-12 col-md-6" v-if="state.form.id">
+              <div class="col-12 col-md-6">
+                <q-select
+                  label="Cliente"
+                  :rules="[requiredRule]"
+                  v-bind="$vSelect"
+                  v-model="state.form.clientId"
+                  :options="state.options.clients"
+                  option-value="id"
+                  :disable="!!state.form.id"
+                />
+              </div>
+              <div class="col-12" v-if="state.form.id">
                 <q-select
                   label="Status"
                   :rules="[requiredRule]"
                   v-bind="$vSelect"
                   v-model="state.form.status"
                   :options="statusOptions"
+                />
+              </div>
+              <div class="col-12">
+                <q-uploader
+                  class="shadow-0 q-my-md full-width"
+                  bordered
+                  max-files="1"
+                  hide-upload-btn
+                  @added="addContactFile"
+                  @removed="removeContactFile"
+                  accept=".xlsx"
                 />
               </div>
             </q-card-section>
@@ -169,8 +124,9 @@
               <q-btn
                 color="primary"
                 label="Salvar"
-                unelevated
                 type="submit"
+                unelevated
+                :disable="!state.form.file && !state.form.id"
                 :loading="loaderStatus(loader.edit)"
               />
             </q-card-actions>
@@ -181,16 +137,15 @@
   </q-page>
 </template>
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { messageSMSTableColumns } from './contactSMS.const'
+import { useContactSMS } from './useContactSMS'
 import { requiredRule } from 'src/validations/form-rules/mixedRules.util'
-import { senderTableColumns } from './sender.const'
-import { useSender } from './useSender'
+import { statusOptions } from 'src/constants/status.const'
 import VDialog from 'src/components/dialog/VDialog.vue'
 import ActionDialog from 'src/components/dialog/ActionDialog.vue'
-import { statusOptions } from 'src/constants/status.const'
-import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 import StatusRow from 'src/components/table/StatusRow.vue'
-import { onMounted } from 'vue'
-import { numberLengthRule } from 'src/validations/form-rules/numberRules.util'
+import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 
 const {
   state,
@@ -198,24 +153,15 @@ const {
   dialog,
   save,
   fetchList,
-  loaderStatus,
   toggleDialog,
+  loaderStatus,
   confirmAction,
+  addContactFile,
   openEditDialog,
   clearEditDialog,
-  openCreateDialog,
   openActionDialog,
-  clearCreateDialog,
-} = useSender()
-
-function addSenderFile(files: readonly File[]) {
-  const [file] = files
-  state.value.formCreate = file || null
-}
-
-function removeSenderFile() {
-  state.value.formCreate = null
-}
+  removeContactFile,
+} = useContactSMS()
 
 onMounted(() => fetchList())
 </script>
