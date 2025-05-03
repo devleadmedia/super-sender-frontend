@@ -52,3 +52,10 @@ export async function disable(ids: string[]) {
     ids,
   })
 }
+
+export async function exportItem(id: string): Promise<File> {
+  await fakePromise(1000)
+
+  const { data } = await api.post(`/contact/sms/export/${id}`)
+  return data
+}

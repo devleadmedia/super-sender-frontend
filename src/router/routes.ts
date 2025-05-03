@@ -88,6 +88,13 @@ const routes: RouteRecordRaw[] = [
           import('src/pages/sms/contact/ContactSMS.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
+      {
+        path: 'shootingSMS',
+        name: 'shootingSMS',
+        component: () =>
+          import('src/pages/sms/shooting/ShootingSMS.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
     ],
   },
   // Always leave this as last one,

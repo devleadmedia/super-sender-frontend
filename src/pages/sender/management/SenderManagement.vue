@@ -14,6 +14,13 @@
           <q-icon name="search" />
         </template>
       </q-input>
+
+      <q-btn
+        color="secondary"
+        outline
+        label="Baixar exemplo"
+        @click="downloadTemplate"
+      />
     </div>
 
     <q-table
@@ -203,6 +210,7 @@ const {
   confirmAction,
   openEditDialog,
   clearEditDialog,
+  downloadTemplate,
   openCreateDialog,
   openActionDialog,
   clearCreateDialog,

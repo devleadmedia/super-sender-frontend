@@ -1,6 +1,4 @@
-import { shadowBanWords } from 'src/constants/sms/shadowBanWords.const'
-
-export function smsInput(text: string) {
+export function smsInput(text: string, listShadowBan: string[]) {
   return removeExactTerms(filterGSM7(text), listShadowBan)
 }
 
@@ -32,7 +30,7 @@ function removeExactTerms(text: string, termsToRemove: string[]) {
   return result.join('').replace(/\s+/g, ' ')
 }
 
-function filterGSM7(text: string) {
+export function filterGSM7(text: string) {
   return [...text]
     .filter((v) => {
       return allowedCharacters.has(v)
@@ -47,8 +45,6 @@ const GSM7 =
 
 const allowedCharacters = new Set([...GSM7])
 
-const listShadowBan: string[] = []
-
-shadowBanWords.forEach((item) =>
-  item.data.forEach((data) => listShadowBan.push(data)),
-)
+export function isGSM7Char(text: string) {
+  return GSM7.includes(text)
+}

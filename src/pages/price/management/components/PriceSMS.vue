@@ -49,7 +49,7 @@
                     v-bind="$vSelect"
                     borderless
                     :outlined="false"
-                    :options="typeShotOptions"
+                    :options="typeShotSMSOptions"
                   />
                 </td>
                 <td class="text-left">
@@ -67,7 +67,7 @@
                     v-bind="$vSelect"
                     borderless
                     :outlined="false"
-                    :options="typeRouteOptions"
+                    :options="typeRouteSMSOptions"
                   />
                 </td>
                 <td class="text-right">
@@ -118,11 +118,15 @@
 
 <script setup lang="ts">
 import {
-  typeRouteOptions,
-  typeShotOptions,
+  typeRouteSMSOptions,
+  typeShotSMSOptions,
   typeSMSOptions,
 } from 'src/constants/shot/typesShot.const'
-import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
+import {
+  TypeRouteSMS,
+  TypeShotSMS,
+  TypeSMS,
+} from 'src/enums/shot/TypesSMS.enum'
 import type { IDataSMS, ITablePrice } from 'src/types/price/ITablePrice.type'
 import { ref } from 'vue'
 
@@ -139,8 +143,8 @@ function addTablePrice() {
     name: 'Novo',
     data: [
       {
-        typeRoute: TypeRoute.shortCode,
-        typeShot: TypeShot.oneWay,
+        typeRoute: TypeRouteSMS.shortCode,
+        typeShot: TypeShotSMS.oneWay,
         typeSMS: TypeSMS.flash,
         value: 0,
       },
@@ -156,8 +160,8 @@ function addTablePriceItem(tableIdx: number) {
   if (!localValue.value[tableIdx]) return
   else
     localValue.value[tableIdx].data.push({
-      typeRoute: TypeRoute.shortCode,
-      typeShot: TypeShot.oneWay,
+      typeRoute: TypeRouteSMS.shortCode,
+      typeShot: TypeShotSMS.oneWay,
       typeSMS: TypeSMS.flash,
       value: 0,
     })

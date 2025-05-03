@@ -16,6 +16,7 @@ import { cloneDeep } from 'src/utils/clone.util'
 import type { ShippingType } from 'src/enums/ShippingType.enum'
 import type { IUser } from 'src/types/user/IUser.type'
 import { dialog, initState, loader } from './priceManagement.const'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 export interface IState {
   visiblePassword: boolean
@@ -35,7 +36,7 @@ export interface IState {
   }
   list: IPrice[]
   filter: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   actionsData: IPrice[]
 }
 
@@ -103,8 +104,10 @@ export function usePriceManagement() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await PriceService.deleteItem(ids)
-        if (actionType == 'disable') await PriceService.disable(ids)
+        if (actionType == ActionDialogOptions.delete)
+          await PriceService.deleteItem(ids)
+        if (actionType == ActionDialogOptions.disable)
+          await PriceService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -140,7 +143,7 @@ export function usePriceManagement() {
     state.value.form = cloneDeep(initState.form)
   }
 
-  function openActionDialog(action: 'delete' | 'disable') {
+  function openActionDialog(action: ActionDialogOptions) {
     state.value.actionType = action
 
     toggleDialog(dialog.action)

@@ -46,11 +46,12 @@
 <script setup lang="ts">
 import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 interface IProps {
   dialogId: string
   loaderActionId: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   prefix: string
   title: string
   nameItems: string[]
@@ -64,12 +65,24 @@ const { dialogIsOpen, toggleDialog, createDialog } = useDialog()
 const emit = defineEmits(['confirmAction', 'clearDialog'])
 
 const actionOptions = {
-  delete: {
+  [ActionDialogOptions.delete]: {
     name: 'Deletar',
     color: 'negative',
   },
-  disable: {
+  [ActionDialogOptions.disable]: {
     name: 'Desativar',
+    color: 'primary',
+  },
+  [ActionDialogOptions.pause]: {
+    name: 'Pausar',
+    color: 'primary',
+  },
+  [ActionDialogOptions.play]: {
+    name: 'Retomar',
+    color: 'primary',
+  },
+  [ActionDialogOptions.cancel]: {
+    name: 'Cancelar',
     color: 'primary',
   },
 }

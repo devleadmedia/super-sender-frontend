@@ -3,12 +3,12 @@ export enum TypeSMS {
   flash,
 }
 
-export enum TypeShot {
+export enum TypeShotSMS {
   oneWay = 1,
   twoWay,
 }
 
-export enum TypeRoute {
+export enum TypeRouteSMS {
   shortCode = 1,
   longCode,
 }

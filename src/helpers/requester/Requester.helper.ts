@@ -108,14 +108,14 @@ export default class ActionDispatcher {
     successMessage?: string,
     timeout?: number,
   ) {
-    if (!successMessage || !title) return
+    if (!successMessage && !title) return
 
     const { feedback } = useNotify()
 
     feedback({
       position: 'bottom-right',
-      title: title,
-      description: successMessage,
+      title: title || '',
+      description: successMessage || '',
       type: 'positive',
       timeout: timeout || 5000,
     })

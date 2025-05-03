@@ -1,7 +1,7 @@
 import { useDialog } from 'src/composables/useDialog'
 import { useLoader } from 'src/composables/useLoader'
 import type { Roles } from 'src/enums/Roles.enum'
-import type { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
+import type { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
 import type { Status } from 'src/enums/Status.enum'
 import type { IUser } from 'src/types/user/IUser.type'
 import type { ShippingType } from 'src/enums/ShippingType.enum'
@@ -10,6 +10,7 @@ import { computed, ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as UserService from 'src/services/user.service'
 import { shootingPermissionsOptions } from 'src/constants/shot/shootingPermissions.const'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 interface IState {
   visiblePassword: boolean
@@ -27,7 +28,7 @@ interface IState {
   }
   list: IUser[]
   filter: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   actionsData: IUser[]
 }
 
@@ -42,7 +43,7 @@ export function useUser() {
     visiblePassword: false,
     alterPassword: false,
     actionsData: [],
-    actionType: 'delete',
+    actionType: ActionDialogOptions.delete,
     filter: '',
     list: [],
   }
@@ -117,8 +118,10 @@ export function useUser() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await UserService.deleteItem(ids)
-        if (actionType == 'disable') await UserService.disable(ids)
+        if (actionType == ActionDialogOptions.delete)
+          await UserService.deleteItem(ids)
+        if (actionType == ActionDialogOptions.disable)
+          await UserService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -148,7 +151,7 @@ export function useUser() {
     state.value.form = cloneDeep(initState.form)
   }
 
-  function openActionDialog(action: 'delete' | 'disable') {
+  function openActionDialog(action: ActionDialogOptions) {
     state.value.actionType = action
     toggleDialog(dialog.action)
   }

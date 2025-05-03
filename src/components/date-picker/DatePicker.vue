@@ -10,13 +10,15 @@
   >
     <template #append>
       <q-icon name="event" class="cursor-pointer q-ml-sm">
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+        <q-popup-proxy cover transition-show="scale" transition-hide="scale" class="shadow-0">
           <q-date
+            bordered
             v-model="dateValue"
             @update:model-value="emitDateValue"
             today-btn
             :mask="propsCurrent.maskDate"
             :locale="dateLocale"
+            minimal
           >
             <div class="row items-center justify-end">
               <q-btn v-close-popup label="Fechar" color="primary" flat />
@@ -25,11 +27,12 @@
         </q-popup-proxy>
       </q-icon>
       <q-icon name="access_time" class="cursor-pointer q-ml-sm">
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+        <q-popup-proxy cover transition-show="scale" transition-hide="scale" class="shadow-0">
           <q-time
             v-model="dateValue"
             format24h
             now-btn
+            bordered
             @update:model-value="emitDateValue"
             :mask="propsCurrent.maskDate"
           >

@@ -20,7 +20,7 @@ export const menuOptions: IMenuOptions[] = [
     children: [
       {
         icon: '',
-        name: 'Mensagens',
+        name: 'Template de mensagens',
         separator: false,
         to: { name: 'messageSMS' },
         roles: [],

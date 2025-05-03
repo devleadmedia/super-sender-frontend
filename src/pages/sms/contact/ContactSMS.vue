@@ -14,6 +14,13 @@
           <q-icon name="search" />
         </template>
       </q-input>
+
+      <q-btn
+        color="secondary"
+        outline
+        label="Baixar exemplo"
+        @click="downloadTemplate"
+      />
     </div>
 
     <q-table
@@ -30,7 +37,7 @@
     >
       <template #top-right>
         <action-header
-          label-new-entity="Novo preço"
+          label-new-entity="Novo contato"
           :has-active="!state.actionsData.length"
           :loader-id="loader.list"
           @open-action-dialog="openActionDialog"
@@ -45,6 +52,15 @@
           <q-btn icon="edit" flat round @click="openEditDialog(props.row)">
             <q-tooltip> Editar </q-tooltip>
           </q-btn>
+          <q-btn
+            icon="download"
+            :disable="loaderStatus(loader.downloadContact)"
+            flat
+            round
+            @click="downloadContact(props.row)"
+          >
+            <q-tooltip> Baixar planilha </q-tooltip>
+          </q-btn>
         </q-td>
       </template>
     </q-table>
@@ -55,7 +71,7 @@
       :loader-action-id="loader.action"
       :name-items="state.actionsData.map((item) => item.title)"
       prefix="os"
-      title="preços"
+      title="contatos"
       @confirm-action="confirmAction"
     />
 
@@ -158,7 +174,9 @@ const {
   confirmAction,
   addContactFile,
   openEditDialog,
+  downloadContact,
   clearEditDialog,
+  downloadTemplate,
   openActionDialog,
   removeContactFile,
 } = useContactSMS()

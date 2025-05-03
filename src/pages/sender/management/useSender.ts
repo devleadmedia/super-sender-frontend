@@ -6,6 +6,8 @@ import { cloneDeep } from 'src/utils/clone.util'
 import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as SenderService from 'src/services/sender/sender.service'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
+import { useSheet } from 'src/composables/useSheet'
 
 interface IState {
   form: {
@@ -18,7 +20,7 @@ interface IState {
   formCreate: File | null
   list: ISender[]
   filter: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   actionsData: ISender[]
 }
 
@@ -30,7 +32,7 @@ export function useSender() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     actionsData: [],
-    actionType: 'delete',
+    actionType: ActionDialogOptions.delete,
     filter: '',
   }
 
@@ -99,8 +101,10 @@ export function useSender() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await SenderService.deleteItem(ids)
-        if (actionType == 'disable') await SenderService.disable(ids)
+        if (actionType == ActionDialogOptions.delete)
+          await SenderService.deleteItem(ids)
+        if (actionType == ActionDialogOptions.disable)
+          await SenderService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -134,10 +138,35 @@ export function useSender() {
     state.value.formCreate = null
   }
 
-  function openActionDialog(action: 'delete' | 'disable') {
+  function openActionDialog(action: ActionDialogOptions) {
     state.value.actionType = action
 
     toggleDialog(dialog.action)
+  }
+
+  async function downloadTemplate() {
+    const { exportXLSX } = useSheet()
+
+    await requester.dispatch({
+      callback: async () => {
+        await exportXLSX(
+          [],
+          [
+            [
+              'operadora',
+              'ddd',
+              'numero',
+            ],
+          ],
+          `remetentes`,
+          '',
+          {},
+        )
+      },
+      errorMessageTitle: 'Erro ao exportar',
+      errorMessage: 'Não foi posssível exportar o template',
+      loaders: [],
+    })
   }
 
   return {
@@ -153,6 +182,7 @@ export function useSender() {
     clearEditDialog,
     openCreateDialog,
     openActionDialog,
+    downloadTemplate,
     clearCreateDialog,
   }
 }

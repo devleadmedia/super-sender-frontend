@@ -76,7 +76,7 @@
       id="drawer-layout"
       bordered
     >
-      <content-drawer />
+      <content-drawer :mini="!state.menu.drawer || state.menu.mini" />
     </q-drawer>
 
     <q-page-container>

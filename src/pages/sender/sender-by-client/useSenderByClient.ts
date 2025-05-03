@@ -10,6 +10,7 @@ import requester from 'src/helpers/requester/Requester.helper'
 import * as SenderByClientService from 'src/services/sender/sender-for-client.service'
 import * as UserService from 'src/services/user.service'
 import * as SenderService from 'src/services/sender/sender.service'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 interface IState {
   form: {
@@ -20,7 +21,7 @@ interface IState {
   }
   list: ISenderByClient[]
   filter: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   actionsData: ISenderByClient[]
   options: {
     clients: IUser[]
@@ -40,7 +41,7 @@ export function useSenderByClient() {
       senders: [],
     },
     actionsData: [],
-    actionType: 'delete',
+    actionType: ActionDialogOptions.delete,
     filter: '',
   }
 
@@ -111,8 +112,10 @@ export function useSenderByClient() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await SenderByClientService.deleteItem(ids)
-        if (actionType == 'disable') await SenderByClientService.disable(ids)
+        if (actionType == ActionDialogOptions.delete)
+          await SenderByClientService.deleteItem(ids)
+        if (actionType == ActionDialogOptions.disable)
+          await SenderByClientService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -144,7 +147,7 @@ export function useSenderByClient() {
     state.value.form = cloneDeep({ ...initState.form })
   }
 
-  function openActionDialog(action: 'delete' | 'disable') {
+  function openActionDialog(action: ActionDialogOptions) {
     state.value.actionType = action
 
     toggleDialog(dialog.action)

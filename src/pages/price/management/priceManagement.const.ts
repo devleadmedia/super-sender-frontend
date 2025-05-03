@@ -1,8 +1,13 @@
 import type { QTableColumn } from 'quasar'
 import type { IState } from './usePriceManagement'
 import { ShippingType } from 'src/enums/ShippingType.enum'
-import { TypeRoute, TypeShot, TypeSMS } from 'src/enums/shot/sms/TypesSMS.enum'
+import {
+  TypeRouteSMS,
+  TypeShotSMS,
+  TypeSMS,
+} from 'src/enums/shot/TypesSMS.enum'
 import { Status } from 'src/enums/Status.enum'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 export const initState: IState = {
   form: {
@@ -13,8 +18,8 @@ export const initState: IState = {
         name: 'Novo',
         data: [
           {
-            typeRoute: TypeRoute.shortCode,
-            typeShot: TypeShot.oneWay,
+            typeRoute: TypeRouteSMS.shortCode,
+            typeShot: TypeShotSMS.oneWay,
             typeSMS: TypeSMS.flash,
             value: 0,
           },
@@ -33,7 +38,7 @@ export const initState: IState = {
   visiblePassword: false,
   alterPassword: false,
   actionsData: [],
-  actionType: 'delete',
+  actionType: ActionDialogOptions.delete,
   filter: '',
   list: [],
 }
@@ -48,7 +53,6 @@ export const loader = {
   edit: 'edit-1e12f342f',
   action: 'action-f3223f',
 }
-
 
 export const priceManagementTableColumns: QTableColumn[] = [
   {

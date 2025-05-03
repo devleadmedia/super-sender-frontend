@@ -1,5 +1,5 @@
 import { ShippingType } from 'src/enums/ShippingType.enum'
-import { ShootingPermissions } from 'src/enums/shot/sms/ShootingPermissions.enum'
+import { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
 
 export const shootingPermissionsOptions = [
   {

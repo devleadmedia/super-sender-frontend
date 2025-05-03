@@ -41,3 +41,18 @@
 .bg-theme-paper {
   background-color: $dark;
 }
+
+.tiptap {
+  &:focus {
+    outline: none;
+  }
+
+  :first-child {
+    margin-top: 0;
+  }
+
+  p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}

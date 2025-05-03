@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Mensagens</h1>
+    <h1 class="text-h5">Template de mensagens - SMS</h1>
 
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
@@ -67,74 +67,17 @@
       @confirm-action="confirmAction"
     />
 
-    <v-dialog :dialog-id="dialog.triggerWord">
-      <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
-        <q-form @submit="save">
-          <q-card-section class="q-py-none q-pt-sm">
-            <h6 class="text-h6 q-my-none">Trigger Words</h6>
-          </q-card-section>
-
-          <q-card-section>
-            <q-input
-              v-bind="$vInput"
-              debounce="300"
-              placeholder="Pesquisar"
-              v-model="state.triggerSearch"
-            >
-              <template #append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </q-card-section>
-
-          <q-card-section>
-            <q-scroll-area
-              visible
-              :thumb-style="{
-                borderRadius: '7px',
-                backgroundColor: 'grey',
-                width: '8px',
-                opacity: '0.75',
-              }"
-              :bar-style="{
-                right: '0px',
-                borderRadius: '9px',
-                backgroundColor: 'grey',
-                width: '8px',
-                opacity: '0.2',
-              }"
-              style="height: 600px"
-            >
-              <div
-                v-for="(item, idx) in triggerWordList"
-                :key="idx"
-                class="q-mr-sm"
-              >
-                <p class="q-mb-none">{{ item?.category }}</p>
-                <q-separator class="q-my-sm" />
-                <ul class="q-mb-lg">
-                  <li v-for="(word, wordIdx) in item?.data" :key="wordIdx">
-                    {{ word }}
-                  </li>
-                </ul>
-              </div>
-            </q-scroll-area>
-          </q-card-section>
-          <q-card-actions align="right">
-            <q-btn
-              color="default"
-              flat
-              label="Cancelar"
-              @click="toggleDialog(dialog.triggerWord)"
-            />
-          </q-card-actions>
-        </q-form>
-      </q-card>
-    </v-dialog>
+    <trigger-word-dialog
+      :dialog-id="dialog.triggerWord"
+      :loader-id="loader.triggerWord"
+      :list-trigger-words="state.triggerWords"
+      @trigger-word-delete="triggerWordDelete"
+      @trigger-word-save="triggerWordSave"
+    />
 
     <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
       <template #default>
-        <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
+        <q-card style="max-width: 800px" class="shadow-0 full-width" bordered>
           <q-form @submit="save">
             <q-card-section class="q-py-none q-pt-sm">
               <h6 class="text-h6 q-my-none">
@@ -160,8 +103,58 @@
                   :options="statusOptions"
                 />
               </div>
+
               <div class="col-12">
-                <message-input v-model="state.form.message" />
+                <message-input
+                  v-model="state.form.message"
+                  :list-shadow-ban="state.triggerWords.map((t) => t.name)"
+                  @info="hasErrorMessage"
+                />
+              </div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-section>
+              <p>Mensagens sugeridas</p>
+
+              <q-btn
+                label="Gerar textos similares"
+                color="primary"
+                outline
+                :disable="!state.form.message.length || state.hasErrorMessage"
+                class="q-mb-md"
+                @click="getAlternativeMessages"
+              />
+
+              <suggested-message
+                v-if="state.options.alternativeMessages.length > 0"
+                :texts="state.options.alternativeMessages"
+                @add-suggested-message="addSuggestedMessage"
+                @close-seggested-message="clearAlternativeMessageOptions"
+              />
+
+              <q-separator
+                v-if="state.form.alternativeMessages.length"
+                class="q-my-md"
+              />
+
+              <div class="row gap-md">
+                <div
+                  class="alternative-message-item flex items-center justify-between no-wrap"
+                  v-for="(item, idx) in state.form.alternativeMessages"
+                  :key="idx"
+                >
+                  <span>{{ item }}</span>
+                  <q-btn
+                    round
+                    icon="close"
+                    flat
+                    dense
+                    color="negative"
+                    @click="removeAlternativeMessage(idx)"
+                  />
+                </div>
               </div>
             </q-card-section>
 
@@ -199,23 +192,38 @@ import ActionDialog from 'src/components/dialog/ActionDialog.vue'
 import VDialog from 'src/components/dialog/VDialog.vue'
 import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 import StatusRow from 'src/components/table/StatusRow.vue'
-import MessageInput from './components/MessageInput.vue'
+import MessageInput from './components/message-input/MessageInput.vue'
+import TriggerWordDialog from './components/trigger-word/TriggerWordDialog.vue'
+import SuggestedMessage from './components/suggested-message/SuggestedMessage.vue'
 
 const {
   state,
   loader,
   dialog,
-  triggerWordList,
   save,
   fetchList,
   toggleDialog,
   loaderStatus,
   confirmAction,
   openEditDialog,
+  triggerWordSave,
   clearEditDialog,
+  hasErrorMessage,
   openActionDialog,
+  triggerWordDelete,
   openTriggerDialog,
+  addSuggestedMessage,
+  getAlternativeMessages,
+  removeAlternativeMessage,
+  clearAlternativeMessageOptions,
 } = useMessageSMS()
 
 onMounted(() => fetchList())
 </script>
+<style lang="scss">
+.alternative-message-item {
+  border: 1px solid $separator-color;
+  border-radius: 4px;
+  padding: 5px;
+}
+</style>

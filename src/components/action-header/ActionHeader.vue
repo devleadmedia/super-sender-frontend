@@ -13,6 +13,7 @@
     />
 
     <q-btn-dropdown
+      v-if="!hideActions"
       color="blue-grey-6"
       label="Ações"
       content-class="q-card--bordered shadow-0"
@@ -54,6 +55,7 @@ interface IProps {
   loaderId: string
   hasActive: boolean
   labelNewEntity: string
+  hideActions?: boolean
 }
 
 defineProps<IProps>()

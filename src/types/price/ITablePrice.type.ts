@@ -1,8 +1,8 @@
 import type {
-  TypeRoute,
-  TypeShot,
+  TypeRouteSMS,
+  TypeShotSMS,
   TypeSMS,
-} from 'src/enums/shot/sms/TypesSMS.enum'
+} from 'src/enums/shot/TypesSMS.enum'
 
 export interface ITablePriceResult {
   tableSMS: ITablePrice<IDataSMS>[]
@@ -16,9 +16,9 @@ export interface ITablePrice<T extends IDataSMS | IDataEmail | IDataWhatsapp> {
 }
 
 export interface IDataSMS {
-  typeShot: TypeShot
+  typeShot: TypeShotSMS
   typeSMS: TypeSMS
-  typeRoute: TypeRoute
+  typeRoute: TypeRouteSMS
   value: number
 }
 

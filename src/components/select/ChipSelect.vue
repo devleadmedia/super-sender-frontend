@@ -6,13 +6,14 @@
     :tabindex="scope.tabindex"
     color="primary"
   >
-    {{ scope.opt.name }}
+    {{ scope.opt[label || 'name'] }}
   </q-chip>
 </template>
 <script setup lang="ts">
 interface IProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   scope: any
+  label?: string
 }
 defineProps<IProps>()
 </script>

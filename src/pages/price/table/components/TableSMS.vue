@@ -12,10 +12,10 @@
       <tbody>
         <tr v-for="(item, idx) in table.data" :key="idx">
           <td class="text-left">
-            {{ typeShotDictionary[item.typeShot].name }}
+            {{ typeShotSMSDictionary[item.typeShot].name }}
           </td>
           <td class="text-left">
-            {{ typeRouteDictionary[item.typeRoute].name }}
+            {{ typeRouteSMSDictionary[item.typeRoute].name }}
           </td>
           <td class="text-right">
             {{
@@ -32,8 +32,8 @@
 </template>
 <script setup lang="ts">
 import {
-  typeRouteDictionary,
-  typeShotDictionary,
+  typeRouteSMSDictionary,
+  typeShotSMSDictionary,
 } from 'src/constants/shot/typesShot.const'
 import type { IDataSMS, ITablePrice } from 'src/types/price/ITablePrice.type'
 

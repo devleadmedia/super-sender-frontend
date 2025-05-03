@@ -8,17 +8,33 @@ declare module '@vue/runtime-core' {
     $vCard: object
     $vMenu: object
     $vBanner: object
+    $vScrollArea: object
   }
 }
 
 export default boot(({ app }) => {
   app.config.globalProperties.$vCard = {
     bordered: true,
-    class: "shadow-0"
+    class: 'shadow-0',
+  }
+  app.config.globalProperties.$vScrollArea = {
+    'thumb-style': {
+      borderRadius: '7px',
+      backgroundColor: 'grey',
+      width: '8px',
+      opacity: '0.75',
+    },
+    'bar-style': {
+      right: '0px',
+      borderRadius: '9px',
+      backgroundColor: 'grey',
+      width: '8px',
+      opacity: '0.2',
+    },
   }
   app.config.globalProperties.$vTable = {
     bordered: true,
-    class: "shadow-0"
+    class: 'shadow-0',
   }
   app.config.globalProperties.$vInput = {
     dense: true,

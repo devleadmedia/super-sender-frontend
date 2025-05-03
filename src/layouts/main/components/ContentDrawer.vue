@@ -1,12 +1,12 @@
 <template>
   <q-scroll-area class="fit">
     <q-item style="height: 60px" :active="false" to="/">
-      <q-img :src="logo" width="130px" />
+      <q-img :src="logo" width="130px" v-if="!mini" />
+      <q-img :src="logoSimple" fit="contain" v-else />
     </q-item>
     <template v-for="(menuItem, index) in menuOptions" :key="index">
-      <!-- v-if="handleRoles(menuItem.roles)" -->
       <q-item
-        v-if="!menuItem.children.length"
+        v-if="handleRoles(menuItem.roles) && !menuItem.children.length"
         active-class="active-item-menu"
         :to="menuItem.to"
         clickable
@@ -21,7 +21,7 @@
         </q-item-section>
       </q-item>
       <q-expansion-item
-        v-else
+        v-else-if="handleRoles(menuItem.roles)"
         :model-value="false"
         :icon="menuItem.icon"
         :label="menuItem.name"
@@ -46,11 +46,17 @@
 </template>
 <script setup lang="ts">
 import logo from 'assets/img/logo/supersender.png'
+import logoSimple from 'assets/img/logo/logo-simple.png'
 import { menuOptions } from '../constants/menuOptions.const'
-/*
-import { Roles } from 'src/enums/roles.enum'
+import { Roles } from 'src/enums/Roles.enum'
 import { useLocalStorage } from 'src/composables/useLocalStorage'
 import { LocalStorageKey } from 'src/enums/LocalStorageKey.enum'
+
+interface IProps {
+  mini?: boolean
+}
+
+defineProps<IProps>()
 
 function handleRoles(roles: Roles[]) {
   const { getLocalStorage } = useLocalStorage()
@@ -61,7 +67,7 @@ function handleRoles(roles: Roles[]) {
   if (userRoles.includes(Roles.admin)) return true
 
   return roles.some((role) => userRoles.includes(role))
-} */
+}
 </script>
 <style lang="scss">
 // ACTIVE EXPANDED

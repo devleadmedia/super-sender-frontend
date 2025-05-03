@@ -8,6 +8,9 @@ import * as UserService from 'src/services/user.service'
 import { cloneDeep } from 'src/utils/clone.util'
 import type { IUser } from 'src/types/user/IUser.type'
 import type { IContactSMS } from 'src/types/sms/IContactSMS.type'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
+import { useSheet } from 'src/composables/useSheet'
+import { exportFile } from 'src/utils/download.util'
 
 export interface IState {
   options: {
@@ -22,7 +25,7 @@ export interface IState {
   }
   list: IContactSMS[]
   filter: string
-  actionType: 'delete' | 'disable'
+  actionType: ActionDialogOptions
   actionsData: IContactSMS[]
 }
 
@@ -39,7 +42,7 @@ export function useContactSMS() {
       clients: [],
     },
     actionsData: [],
-    actionType: 'delete',
+    actionType: ActionDialogOptions.delete,
     filter: '',
     list: [],
   }
@@ -53,6 +56,7 @@ export function useContactSMS() {
     list: 'list-1e12f342f',
     edit: 'edit-1e12f342f',
     action: 'action-f3223f',
+    downloadContact: 'downloadContact-f3223f',
   }
 
   const state = ref<IState>(cloneDeep(initState))
@@ -97,6 +101,20 @@ export function useContactSMS() {
     })
   }
 
+  async function downloadContact(item: IContactSMS) {
+    await requester.dispatch({
+      callback: async () => {
+        const file = await ContactSMSService.exportItem(item.id)
+        exportFile('contatos.xlsx', file)
+      },
+      successCallback: async () => {},
+      successMessageTitle: 'Concluído com sucesso',
+      errorMessageTitle: 'Houve um erro',
+      errorMessage: 'Não foi possível realizar a ação',
+      loaders: [loader.downloadContact],
+    })
+  }
+
   async function confirmAction() {
     await requester.dispatch({
       callback: async () => {
@@ -104,8 +122,10 @@ export function useContactSMS() {
 
         const ids = state.value.actionsData.map((item) => item.id)
 
-        if (actionType == 'delete') await ContactSMSService.deleteItem(ids)
-        if (actionType == 'disable') await ContactSMSService.disable(ids)
+        if (actionType == ActionDialogOptions.delete)
+          await ContactSMSService.deleteItem(ids)
+        if (actionType == ActionDialogOptions.disable)
+          await ContactSMSService.disable(ids)
       },
       successCallback: async () => {
         toggleDialog(dialog.action)
@@ -135,7 +155,7 @@ export function useContactSMS() {
     state.value.form = cloneDeep(initState.form)
   }
 
-  function openActionDialog(action: 'delete' | 'disable') {
+  function openActionDialog(action: ActionDialogOptions) {
     state.value.actionType = action
 
     toggleDialog(dialog.action)
@@ -148,6 +168,37 @@ export function useContactSMS() {
 
   function removeContactFile() {
     state.value.form.file = null
+  }
+
+  async function downloadTemplate() {
+    const { exportXLSX } = useSheet()
+
+    await requester.dispatch({
+      callback: async () => {
+        await exportXLSX(
+          [],
+          [
+            [
+              'nome',
+              'ddd',
+              'telefone',
+              'operadora',
+              'variavel 1',
+              'variavel 2',
+              'variavel 3',
+              'variavel 4',
+              'variavel 5',
+            ],
+          ],
+          `contatos`,
+          '',
+          {},
+        )
+      },
+      errorMessageTitle: 'Erro ao exportar',
+      errorMessage: 'Não foi posssível exportar o template',
+      loaders: [],
+    })
   }
 
   return {
@@ -163,6 +214,8 @@ export function useContactSMS() {
     openEditDialog,
     addContactFile,
     clearEditDialog,
+    downloadContact,
+    downloadTemplate,
     openActionDialog,
     removeContactFile,
   }
