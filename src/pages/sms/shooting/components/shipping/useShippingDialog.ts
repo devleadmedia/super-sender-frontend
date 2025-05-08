@@ -9,6 +9,8 @@ import { useLoader } from 'src/composables/useLoader'
 import { codeOptions } from 'src/constants/sms/codes.const'
 import type { IOption } from 'src/types/IOption.type'
 import { useDialog } from 'src/composables/useDialog'
+import { IShootingSMS } from 'src/types/sms/IShootingSMS.type'
+import { exportFile } from 'src/utils/download.util'
 
 interface IState {
   list: IShippingSMS[]
@@ -52,6 +54,7 @@ export function useShippingDialog() {
 
   const loader = {
     shipping: 'shipping-gh343f2',
+    downloadShipping: 'downloadShipping-asdfgreh45',
   }
 
   const dialog = {
@@ -93,6 +96,20 @@ export function useShippingDialog() {
     toggleDialog(dialog.message)
   }
 
+  async function downloadShipping(item: IShootingSMS) {
+    await requester.dispatch({
+      callback: async () => {
+        const file = await ShippingSMSService.exportItem(item.id)
+        exportFile(`${item.name.trim()}.xlsx`, file)
+      },
+      successCallback: async () => {},
+      successMessageTitle: 'Concluído com sucesso',
+      errorMessageTitle: 'Houve um erro',
+      errorMessage: 'Não foi possível realizar a ação',
+      loaders: [loader.downloadShipping],
+    })
+  }
+
   return {
     state,
     dialog,
@@ -100,6 +117,7 @@ export function useShippingDialog() {
     fetchList,
     toggleDialog,
     loaderStatus,
+    downloadShipping,
     openMessageDialog,
   }
 }

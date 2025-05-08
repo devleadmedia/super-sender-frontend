@@ -1,9 +1,8 @@
 <template>
-  <q-layout view="lHh LpR fff">
+  <q-layout view="lHh LpR lfr">
     <q-header class="header-layout-main">
       <q-toolbar class="header-layout-main">
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-        <!-- <q-toolbar-title></q-toolbar-title> -->
 
         <q-space />
 
@@ -82,6 +81,10 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer class="text-center q-pa-md bg-transparent" bordered>
+      © 2025 Super sender. Todos os direitos reservados. Versão 1.0
+    </q-footer>
   </q-layout>
 </template>
 

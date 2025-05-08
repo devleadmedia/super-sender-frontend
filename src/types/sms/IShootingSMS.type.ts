@@ -5,7 +5,7 @@ import type {
   TypeSMS,
 } from 'src/enums/shot/TypesSMS.enum'
 import { IBasicEntity } from '../IBasicEntity.type'
-import { IMessageSMS } from './IMessageSMS.type'
+import { ICampaign } from '../campaign/ICampaign.type'
 
 export interface IShootingSMS {
   id: string
@@ -15,7 +15,7 @@ export interface IShootingSMS {
   typeSMS: TypeSMS
   typeRoute: TypeRouteSMS
   status: ShootingStatusSMS
-  message: IMessageSMS
+  campaign: ICampaign
   contactIds: string[]
   user: IBasicEntity<string>
 }

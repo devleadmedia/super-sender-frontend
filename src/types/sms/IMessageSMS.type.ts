@@ -4,6 +4,7 @@ export interface IMessageSMS {
   id: string
   title: string
   message: string
-  status: Status 
+  status: Status
   alternativeMessages: string[]
+  campaignId: string
 }

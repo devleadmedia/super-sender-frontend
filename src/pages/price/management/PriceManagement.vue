@@ -63,7 +63,7 @@
       full-width
       maximized
       :dialog-id="dialog.edit"
-      @clear-dialog="clearEditDialog"
+      @before-hide="clearEditDialog"
     >
       <template #default>
         <q-card style="max-width: 200px" class="shadow-0 full-width" bordered>

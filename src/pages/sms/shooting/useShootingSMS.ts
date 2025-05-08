@@ -3,7 +3,7 @@ import { useLoader } from 'src/composables/useLoader'
 import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as ContactSMSService from 'src/services/sms/contactSMS.service'
-import * as MessageSMSService from 'src/services/sms/messageSMS.service'
+import * as campaignservice from 'src/services/campaign/campaign.service'
 import * as ShootingSMSService from 'src/services/sms/shootingSMS.service'
 import * as UserService from 'src/services/user.service'
 import { cloneDeep } from 'src/utils/clone.util'
@@ -14,25 +14,25 @@ import {
   TypeSMS,
 } from 'src/enums/shot/TypesSMS.enum'
 import { ShootingStatusSMS } from 'src/enums/shot/ShootingStatusSMS.type'
-import type { IMessageSMS } from 'src/types/sms/IMessageSMS.type'
 import type { IShootingSMS } from 'src/types/sms/IShootingSMS.type'
 import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 import { IUser } from 'src/types/user/IUser.type'
 import { useRoles } from 'src/composables/useRoles'
 import { IRequestTable } from 'src/types/quasar/IRequestTable.type'
 import { IOption } from 'src/types/IOption.type'
+import { ICampaign } from 'src/types/campaign/ICampaign.type'
 
 export interface IState {
   step: string
   resultSendRequest: number | null
   options: {
-    messageSMS: IMessageSMS[]
+    campaigns: ICampaign[]
     contactSMS: IContactSMS[]
     users: IUser[]
     typeSMS: IOption<string>[]
   }
   optionsData: {
-    messageSMS: IMessageSMS[]
+    campaigns: ICampaign[]
     contactSMS: IContactSMS[]
     users: IUser[]
     typeSMS: IOption<string>[]
@@ -45,7 +45,7 @@ export interface IState {
     typeSMS: TypeSMS
     typeRoute: TypeRouteSMS
     status: ShootingStatusSMS
-    messageId: string
+    campaignId: string
     contactIds: string[]
   }
   list: IShootingSMS[]
@@ -86,19 +86,18 @@ export function useShootingSMS() {
       id: '',
       contactIds: [],
       date: '',
-      messageIds: [],
       name: '',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     options: {
       contactSMS: [],
-      messageSMS: [],
+      campaigns: [],
       users: [],
       typeSMS: [],
     },
     optionsData: {
       contactSMS: [],
-      messageSMS: [],
+      campaigns: [],
       users: [],
       typeSMS: [],
     },
@@ -143,12 +142,12 @@ export function useShootingSMS() {
   async function fetchList() {
     await requester.dispatch({
       callback: async () => {
-        const messageSMS = await MessageSMSService.getAll()
+        const Campaing = await campaignservice.getAll()
         const contactSMS = await ContactSMSService.getAll()
         const users = await UserService.getAll()
 
-        state.value.options.messageSMS = cloneDeep(messageSMS)
-        state.value.optionsData.messageSMS = cloneDeep(messageSMS)
+        state.value.options.campaigns = cloneDeep(Campaing)
+        state.value.optionsData.campaigns = cloneDeep(Campaing)
         state.value.options.contactSMS = cloneDeep(contactSMS)
         state.value.optionsData.contactSMS = cloneDeep(contactSMS)
         state.value.options.users = cloneDeep(users)
@@ -174,7 +173,7 @@ export function useShootingSMS() {
             state.value.form.typeSMS,
             state.value.form.typeRoute,
             state.value.form.status,
-            state.value.form.messageId,
+            state.value.form.campaignId,
             state.value.form.contactIds,
           )
         else
@@ -185,7 +184,7 @@ export function useShootingSMS() {
             state.value.form.typeSMS,
             state.value.form.typeRoute,
             state.value.form.status,
-            state.value.form.messageId,
+            state.value.form.campaignId,
             state.value.form.contactIds,
           )
       },
@@ -262,7 +261,7 @@ export function useShootingSMS() {
     if (item) {
       state.value.form = cloneDeep({
         ...item,
-        messageId: item.message.id,
+        campaignId: item.campaign.id,
       })
     } else clearEditDialog()
 

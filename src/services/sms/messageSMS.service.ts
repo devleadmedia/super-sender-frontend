@@ -22,16 +22,24 @@ export async function getAll(): Promise<IMessageSMS[]> {
       alternativeMessages: [
         'Ao contrario da crenca popular, o Lorem Ipsum nao é simplesmente texto aleatorio. Tem raizes numa peca de literatura classica em Latim, de 45 AC.',
       ],
+      campaignId: `${idx}`,
     })
   }
 
   return data
 }
 
-export async function create(title: string, message: string) {
+export async function create(
+  title: string,
+  message: string,
+  alternativeMessages: string[],
+  campaignId: string,
+) {
   await api.post('/message/sms', {
     title,
     message,
+    alternativeMessages,
+    campaignId,
   })
 }
 
@@ -40,11 +48,15 @@ export async function save(
   title: string,
   message: string,
   status: Status,
+  alternativeMessages: string[],
+  campaignId: string,
 ) {
   await api.put(`/message/sms/${id}`, {
     title,
     message,
     status,
+    alternativeMessages,
+    campaignId,
   })
 }
 

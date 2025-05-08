@@ -1,6 +1,5 @@
 <template>
   <q-dialog
-    @before-hide="emit('clearEditDialog')"
     :model-value="dialogIsOpen(dialogId)"
     transition-show="scale"
     transition-hide="scale"
@@ -18,7 +17,6 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
-const emit = defineEmits(['clearEditDialog', 'submit'])
 
 const { dialogIsOpen, createDialog } = useDialog()
 

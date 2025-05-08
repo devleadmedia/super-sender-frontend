@@ -205,7 +205,7 @@
       @confirm-action="confirmAction"
     />
 
-    <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
+    <v-dialog :dialog-id="dialog.edit" @before-hide="clearEditDialog">
       <template #default>
         <q-card style="max-width: 800px" class="shadow-0 full-width" bordered>
           <q-card-section class="q-py-none q-pt-sm">

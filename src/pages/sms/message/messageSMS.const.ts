@@ -1,6 +1,8 @@
 import type { QTableColumn } from 'quasar'
+import { useRoles } from 'src/composables/useRoles'
 import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 import { Status } from 'src/enums/Status.enum'
+import { ICampaign } from 'src/types/campaign/ICampaign.type'
 import { IMessageSMS } from 'src/types/sms/IMessageSMS.type'
 import { ITriggerWord } from 'src/types/sms/ITriggerWord.type'
 import { IUser } from 'src/types/user/IUser.type'
@@ -9,11 +11,13 @@ export interface IState {
   options: {
     clients: IUser[]
     alternativeMessages: string[]
+    campaigns: ICampaign[]
   }
   form: {
     id: string
     title: string
     message: string
+    campaignId: string
     status: Status
     isAlternativeMessages: boolean
     alternativeMessages: string[]
@@ -26,6 +30,8 @@ export interface IState {
   hasErrorMessage: boolean
 }
 
+const { isAdmin } = useRoles()
+
 export const initState: IState = {
   form: {
     id: '',
@@ -34,10 +40,12 @@ export const initState: IState = {
     message: '',
     alternativeMessages: [],
     isAlternativeMessages: false,
+    campaignId: ''
   },
   options: {
     clients: [],
     alternativeMessages: [],
+    campaigns: []
   },
   actionsData: [],
   actionType: ActionDialogOptions.delete,
@@ -75,4 +83,31 @@ export const messageSMSTableColumns: QTableColumn[] = [
     name: 'actions',
     align: 'left',
   },
+]
+
+export const triggerWordTableColumns: QTableColumn[] = [
+  {
+    label: 'Id',
+    field: 'id',
+    name: 'id',
+    sortable: true,
+    align: 'left',
+  },
+  {
+    label: 'Nome',
+    field: 'name',
+    name: 'name',
+    sortable: true,
+    align: 'left',
+  },
+  ...(isAdmin()
+    ? [
+        {
+          label: 'Ações',
+          field: 'actions',
+          name: 'actions',
+          align: 'left',
+        } as QTableColumn,
+      ]
+    : []),
 ]

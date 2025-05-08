@@ -1,9 +1,9 @@
-// import { api } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { random } from 'lodash'
 import type { IShippingSMS } from 'src/types/sms/IShippingSMS.type'
 import { shippingStatusOptions } from 'src/constants/shipping/shippingStatusSMS.const'
 import { ShippingStatusSMS } from 'src/enums/shipping/ShippingStatusSMS.enum'
+import { api } from 'src/boot/axios'
 
 export async function getAll(
   shootingId: string,
@@ -67,5 +67,12 @@ export async function getAll(
 
   console.log(shootingId, search, code, carrier, status, reply)
 
+  return data
+}
+
+export async function exportItem(id: string): Promise<File> {
+  await fakePromise(1000)
+
+  const { data } = await api.post(`/shipping/sms/export/${id}`)
   return data
 }

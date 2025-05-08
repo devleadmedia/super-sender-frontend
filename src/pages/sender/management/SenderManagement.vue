@@ -68,7 +68,7 @@
       @confirm-action="confirmAction"
     />
 
-    <v-dialog :dialog-id="dialog.create" @clear-dialog="clearCreateDialog">
+    <v-dialog :dialog-id="dialog.create" @before-hide="clearCreateDialog">
       <template #default>
         <q-card
           v-bind="$vCard"
@@ -115,7 +115,7 @@
       </template>
     </v-dialog>
 
-    <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
+    <v-dialog :dialog-id="dialog.edit" @before-hide="clearEditDialog">
       <template #default>
         <q-card style="max-width: 500px" class="shadow-0 full-width" bordered>
           <q-form @submit="save">

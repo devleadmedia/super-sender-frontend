@@ -83,12 +83,12 @@ export const shootingSMSTableColumns: QTableColumn[] = [
     align: 'center',
   },
   {
-    label: 'Mensagem',
-    field: 'message',
-    name: 'message',
+    label: 'Campanha',
+    field: 'campaign',
+    name: 'campaign',
     sortable: true,
     align: 'left',
-    format: (v) => v.title,
+    format: (v) => v.name,
   },
   {
     label: 'Lista de contatos',

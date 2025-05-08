@@ -48,3 +48,46 @@ const allowedCharacters = new Set([...GSM7])
 export function isGSM7Char(text: string) {
   return GSM7.includes(text)
 }
+
+export function splitSMS(text: string): string[] {
+  const maxLengthSingleMessage = 160
+  const maxLengthMultipartMessage = 153
+
+  if (text.length <= maxLengthSingleMessage) {
+    return text.length ? [text] : []
+  }
+
+  const messages: string[] = []
+  let remainingText = text
+
+  while (remainingText.length > 0) {
+    const chunk = remainingText.slice(0, maxLengthMultipartMessage)
+    messages.push(chunk)
+    remainingText = remainingText.slice(maxLengthMultipartMessage)
+  }
+
+  return messages
+}
+
+export function countSMS(text: string) {
+  const maxLengthSingleMessage = 160
+  const maxLengthMultipartMessage = 153
+
+  const length = text.length
+  let messages, remaining
+
+  if (length <= maxLengthSingleMessage) {
+    messages = length ? 1 : 0
+    remaining = maxLengthSingleMessage - length
+  } else {
+    messages = Math.ceil(length / maxLengthMultipartMessage)
+    remaining = messages * maxLengthMultipartMessage - length
+  }
+
+  return {
+    length: length,
+    remaining: remaining,
+    messages: messages,
+    splitSMS: splitSMS(text),
+  }
+}

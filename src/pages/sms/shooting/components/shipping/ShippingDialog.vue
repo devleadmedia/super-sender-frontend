@@ -74,7 +74,7 @@
 
               <q-select
                 style="width: 200px"
-                label="Operadores"
+                label="Operadoras"
                 :options="state.options.carriers"
                 clearable
                 v-bind="$vSelect"
@@ -113,6 +113,18 @@
           </div>
         </q-card-section>
 
+        <q-separator inset />
+
+        <q-card-section align="right">
+          <q-btn
+            label="Exportar"
+            color="secondary"
+            outline
+            :loading="loaderStatus(loader.downloadShipping)"
+            @click="downloadShipping(shooting!)"
+          />
+        </q-card-section>
+
         <q-card-section>
           <q-table
             flat
@@ -122,7 +134,7 @@
             :columns="shippingSMSTableColumns"
             :rows-per-page-options="[20]"
             :loading="loaderStatus(loader.shipping)"
-            style="height: 500px;"
+            style="height: 500px"
             virtual-scroll
           >
             <template #body-cell-actions="props">
@@ -256,6 +268,7 @@ const {
   fetchList,
   loaderStatus,
   toggleDialog,
+  downloadShipping,
   openMessageDialog,
 } = useShippingDialog()
 

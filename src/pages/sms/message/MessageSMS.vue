@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Template de mensagens - SMS</h1>
+    <h1 class="text-h5">Templates de mensagem - SMS</h1>
 
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
@@ -75,7 +75,7 @@
       @trigger-word-save="triggerWordSave"
     />
 
-    <v-dialog :dialog-id="dialog.edit" @clear-dialog="clearEditDialog">
+    <v-dialog :dialog-id="dialog.edit" @before-hide="clearEditDialog">
       <template #default>
         <q-card style="max-width: 800px" class="shadow-0 full-width" bordered>
           <q-form @submit="save">
@@ -103,6 +103,16 @@
                   :options="statusOptions"
                 />
               </div>
+              <div class="col-12">
+                <q-select
+                  label="Campanha"
+                  :rules="[requiredRule]"
+                  v-bind="$vSelect"
+                  v-model="state.form.campaignId"
+                  :options="state.options.campaigns"
+                  option-value="id"
+                />
+              </div>
 
               <div class="col-12">
                 <message-input
@@ -116,13 +126,18 @@
             <q-separator />
 
             <q-card-section>
-              <p>Mensagens sugeridas</p>
+              <p>
+                Mensagens sugeridas ({{ state.form.alternativeMessages.length }}
+                / 15)
+              </p>
 
               <q-btn
                 label="Gerar textos similares"
                 color="primary"
                 outline
-                :disable="!state.form.message.length || state.hasErrorMessage"
+                :disable="
+                  state.form.message.length < 25 || state.hasErrorMessage
+                "
                 class="q-mb-md"
                 @click="getAlternativeMessages"
               />
@@ -130,6 +145,7 @@
               <suggested-message
                 v-if="state.options.alternativeMessages.length > 0"
                 :texts="state.options.alternativeMessages"
+                :disable-approved="state.form.alternativeMessages.length == 15"
                 @add-suggested-message="addSuggestedMessage"
                 @close-seggested-message="clearAlternativeMessageOptions"
               />
@@ -140,21 +156,28 @@
               />
 
               <div class="row gap-md">
-                <div
-                  class="alternative-message-item flex items-center justify-between no-wrap"
-                  v-for="(item, idx) in state.form.alternativeMessages"
-                  :key="idx"
+                <q-scroll-area
+                  v-if="state.form.alternativeMessages.length"
+                  visible
+                  style="height: 200px"
+                  class="full-width"
                 >
-                  <span>{{ item }}</span>
-                  <q-btn
-                    round
-                    icon="close"
-                    flat
-                    dense
-                    color="negative"
-                    @click="removeAlternativeMessage(idx)"
-                  />
-                </div>
+                  <div
+                    class="alternative-message-item flex q-mb-md items-center justify-between no-wrap q-mr-md"
+                    v-for="(item, idx) in state.form.alternativeMessages"
+                    :key="idx"
+                  >
+                    <span>{{ item }}</span>
+                    <q-btn
+                      round
+                      icon="close"
+                      flat
+                      dense
+                      color="negative"
+                      @click="removeAlternativeMessage(idx)"
+                    />
+                  </div>
+                </q-scroll-area>
               </div>
             </q-card-section>
 

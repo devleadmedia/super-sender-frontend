@@ -12,6 +12,14 @@ interface IMenuOptions {
 
 export const menuOptions: IMenuOptions[] = [
   {
+    icon: 'campaign',
+    name: 'Campanhas',
+    separator: false,
+    to: { name: 'campaign' },
+    roles: [],
+    children: [],
+  },
+  {
     icon: 'message',
     name: 'SMS',
     separator: false,
@@ -20,7 +28,7 @@ export const menuOptions: IMenuOptions[] = [
     children: [
       {
         icon: '',
-        name: 'Template de mensagens',
+        name: 'Templates de mensagem',
         separator: false,
         to: { name: 'messageSMS' },
         roles: [],

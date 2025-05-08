@@ -57,23 +57,13 @@
     </div>
     <div class="col-12">
       <q-select
-        label="Mensagens"
+        label="Campanha"
         :rules="[requiredRule]"
         v-bind="$vSelect"
-        v-model="v.messageId"
-        :options="options.messageSMS"
-        option-label="title"
+        v-model="v.campaignId"
+        :options="options.campaigns"
         option-value="id"
-      >
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps">
-            <q-item-section>
-              <q-item-label>{{ scope.opt.title }}</q-item-label>
-              <q-item-label caption>{{ scope.opt.message }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      />
     </div>
   </div>
 </template>
@@ -91,11 +81,11 @@ import {
   TypeSMS,
 } from 'src/enums/shot/TypesSMS.enum'
 import type { IContactSMS } from 'src/types/sms/IContactSMS.type'
-import type { IMessageSMS } from 'src/types/sms/IMessageSMS.type'
 import { requiredRule } from 'src/validations/form-rules/mixedRules.util'
 import { computed, ref, watch } from 'vue'
 import ChipSelect from 'src/components/select/ChipSelect.vue'
 import { IOption } from 'src/types/IOption.type'
+import { ICampaign } from 'src/types/campaign/ICampaign.type'
 
 interface IProps {
   modelValue: {
@@ -106,11 +96,11 @@ interface IProps {
     typeSMS: TypeSMS
     typeRoute: TypeRouteSMS
     status: ShootingStatusSMS
-    messageId: string
+    campaignId: string
     contactIds: string[]
   }
   options: {
-    messageSMS: IMessageSMS[]
+    campaigns: ICampaign[]
     contactSMS: IContactSMS[]
     typeSMS: IOption<string>[]
   }
@@ -137,8 +127,6 @@ const currentTypeSMSOptions = computed(() => {
 
 watch(
   () => v.value,
-  (v) => {
-    emit('modelValue:update', v)
-  },
+  (v) => emit('modelValue:update', v),
 )
 </script>

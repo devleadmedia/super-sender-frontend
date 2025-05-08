@@ -49,7 +49,6 @@ export function useProfile() {
       successCallback: () => {
         resetPassword()
       },
-      successMessageTitle: 'Concluído com sucesso',
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível realizar a ação',
       loaders: [loader.fetch],

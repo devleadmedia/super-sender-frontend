@@ -1,19 +1,40 @@
 <template>
-  <q-field
-    label="Mensagem"
-    outlined
-    stack-label
-    :model-value="editorInstance?.getText()"
-    counter
-    :maxlength="maxCaracters"
-  >
-    <editor-content
-      v-if="editorInstance"
-      :editor="editorInstance"
-      style="color: white; min-height: 100px"
-      class="full-height full-width"
+  <template v-if="!state.chatMode">
+    <div class="flex gap-md q-mb-sm">
+      <span>TOTAL: {{ currentCountSMS.length }} </span>
+      |<span>MENSAGENS: {{ currentCountSMS.messages }} </span>|
+      <span>RESTANTE: {{ currentCountSMS.remaining }} </span>
+    </div>
+
+    <q-field label="Mensagem" outlined stack-label>
+      <editor-content
+        v-if="editorInstance"
+        :editor="editorInstance"
+        style="color: white; min-height: 50px"
+        class="full-height full-width q-pb-sm"
+      />
+    </q-field>
+  </template>
+
+  <div v-else class="full-width">
+    <q-separator class="q-my-md" />
+    <p>Visualização de mensagens</p>
+    <q-chat-message
+      v-for="(text, idx) in currentCountSMS.splitSMS"
+      :key="idx"
+      :text="[text]"
+      sent
+      name="Super Sender"
     />
-  </q-field>
+
+    <p v-if="!currentCountSMS.splitSMS.length" class="text-center">
+      Escreva alguma mensagem...
+    </p>
+  </div>
+
+  <div class="flex justify-end">
+    <q-toggle label="Visualizar chat" v-model="state.chatMode" />
+  </div>
 
   <q-separator v-if="state.infos.length" class="q-my-md" />
 
@@ -29,11 +50,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import StarterKit from '@tiptap/starter-kit'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import { ErrorHighlighter } from './highLighter.const'
 import { Editor } from '@tiptap/core'
+import { countSMS } from 'src/utils/sms.util'
 
 interface IProps {
   modelValue: string
@@ -42,6 +64,7 @@ interface IProps {
 
 interface IState {
   infos: IItemInfo[]
+  chatMode: boolean
 }
 
 interface IItemInfo {
@@ -50,13 +73,14 @@ interface IItemInfo {
   type: 'info' | 'error'
 }
 
-const maxCaracters = 160
-
 const props = defineProps<IProps>()
 
 const state = ref<IState>({
   infos: [],
+  chatMode: false,
 })
+
+const currentCountSMS = computed(() => countSMS(props.modelValue))
 
 const emit = defineEmits(['update:modelValue', 'info'])
 
@@ -73,12 +97,9 @@ const editorInstance = useEditor({
   },
   onUpdate: ({ editor }) => {
     const text = editor.getText()
-    const truncatedText = text.slice(0, maxCaracters)
-
-    if (text.length > maxCaracters) editor.commands.setContent(truncatedText)
 
     handleInfo(editor, text)
-    emit('update:modelValue', truncatedText)
+    emit('update:modelValue', text)
     return text
   },
   extensions: [StarterKit, ErrorHighlighter(props.listShadowBan)],
@@ -92,7 +113,7 @@ function handleInfo(editor: Editor, text: string) {
       label:
         'Mensagens com mais de 139 caracteres estão sujeitas a shadowban pelas operadoras quando enviadas via rota Long Code.',
       color: 'warning',
-      type: 'error',
+      type: 'info',
     })
 
   if (editor.$doc.element.querySelectorAll('.error-word').length)
@@ -105,8 +126,16 @@ function handleInfo(editor: Editor, text: string) {
   if (editor.$doc.element.querySelectorAll('.variable-word').length)
     infos.push({
       label:
-        'Variáveis foram adicionadas e serão substituidas pelos valores indicados',
+        'Variáveis foram adicionadas e serão substituidas pelos valores indicados.',
       color: 'info',
+      type: 'info',
+    })
+
+  if (currentCountSMS.value.messages > 1)
+    infos.push({
+      label:
+        'O envio de múltiplas mensagens consecutivas pode resultar em um aumento proporcional no consumo de créditos.',
+      color: 'warning',
       type: 'info',
     })
 

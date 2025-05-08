@@ -7,6 +7,7 @@ import { CookieKey } from 'src/enums/CookieKey.enum'
 import requester from 'src/helpers/requester/Requester.helper'
 import { api } from '../boot/axios'
 import { Roles } from 'src/enums/Roles.enum'
+import { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
 
 export function useAuth() {
   const { setCookie, getCookie, removeCookie } = useCookies()
@@ -23,8 +24,11 @@ export function useAuth() {
       email,
       balance: 1232.45,
       roles: [Roles.admin, Roles.client],
-      shootingPermissions: [],
-      token: 'doem09vg49vgm430g'
+      shootingPermissions: [
+        ShootingPermissions.oneWay,
+        ShootingPermissions.shortCode,
+      ],
+      token: 'doem09vg49vgm430g',
     }
 
     setLocalStorage(

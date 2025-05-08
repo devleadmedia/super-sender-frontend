@@ -58,11 +58,10 @@ export async function getAll(
       status: shootingStatusSMSOptions[random(0, 5, false)]!.value,
       contactIds: ['0', '1', '2'],
       date: date.toISOString(),
-      message: {
+      campaign: {
         id: '0',
-        alternativeMessages: [],
-        title: 'Titulo de mensagem',
-        message: 'Mensagem de alguma coisa',
+        menssageIds: ['0', '1', '2'],
+        name: '0# Nome da campanha',
         status: Status.active,
       },
       typeRoute: random(0, 1, false)
@@ -107,7 +106,7 @@ export async function create(
   typeSMS: TypeSMS,
   typeRoute: TypeRouteSMS,
   status: ShootingStatusSMS,
-  messageId: string,
+  campaignId: string,
   contactIds: string[],
 ) {
   /* await api.post('/shooting/sms', {
@@ -117,7 +116,7 @@ export async function create(
     typeSMS,
     typeRoute,
     status,
-    messageIds,
+    campaignIds,
     contactId,
   }) */
 
@@ -130,7 +129,7 @@ export async function create(
     typeSMS,
     typeRoute,
     status,
-    messageId,
+    campaignId,
     contactIds,
   )
 
@@ -145,7 +144,7 @@ export async function save(
   typeSMS: TypeSMS,
   typeRoute: TypeRouteSMS,
   status: ShootingStatusSMS,
-  messageId: string,
+  campaignId: string,
   contactIds: string[],
 ) {
   /* await api.put(`/shooting/sms/${id}`, {
@@ -155,7 +154,7 @@ export async function save(
     typeSMS,
     typeRoute,
     status,
-    messageIds,
+    campaignIds,
     contactId,
   }) */
 
@@ -169,7 +168,7 @@ export async function save(
     typeSMS,
     typeRoute,
     status,
-    messageId,
+    campaignId,
     contactIds,
   )
 

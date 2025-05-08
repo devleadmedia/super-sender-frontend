@@ -1,6 +1,6 @@
 <template>
   <q-page class="container q-layout-padding">
-    <h1 class="text-h5">Contatos de SMS</h1>
+    <h1 class="text-h5">Gerenciar campanhas</h1>
 
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
@@ -14,13 +14,6 @@
           <q-icon name="search" />
         </template>
       </q-input>
-
-      <q-btn
-        color="secondary"
-        outline
-        label="Baixar exemplo"
-        @click="downloadTemplate"
-      />
     </div>
 
     <q-table
@@ -30,14 +23,14 @@
       selection="multiple"
       v-model:selected="state.actionsData"
       :rows="state.list"
-      :columns="messageSMSTableColumns"
+      :columns="campaignTableColumns"
       :filter="state.filter"
       :loading="loaderStatus(loader.list)"
       :rows-per-page-options="[20]"
     >
       <template #top-right>
         <action-header
-          label-new-entity="Novo contato"
+          label-new-entity="Nova campanha"
           :has-active="!state.actionsData.length"
           :loader-id="loader.list"
           @open-action-dialog="openActionDialog"
@@ -52,15 +45,6 @@
           <q-btn icon="edit" flat round @click="openEditDialog(props.row)">
             <q-tooltip> Editar </q-tooltip>
           </q-btn>
-          <q-btn
-            icon="download"
-            :disable="loaderStatus(loader.downloadContact)"
-            flat
-            round
-            @click="downloadContact(props.row)"
-          >
-            <q-tooltip> Baixar planilha </q-tooltip>
-          </q-btn>
         </q-td>
       </template>
     </q-table>
@@ -69,9 +53,9 @@
       :action-type="state.actionType"
       :dialog-id="dialog.action"
       :loader-action-id="loader.action"
-      :name-items="state.actionsData.map((item) => item.title)"
-      prefix="os"
-      title="contatos"
+      :name-items="state.actionsData.map((item) => item.name)"
+      prefix="as"
+      title="campanhas"
       @confirm-action="confirmAction"
     />
 
@@ -81,31 +65,20 @@
           <q-form @submit="save">
             <q-card-section class="q-py-none q-pt-sm">
               <h6 class="text-h6 q-my-none">
-                {{ state.form.id ? 'Editar' : 'Criar' }} contato
+                {{ state.form.id ? 'Editar' : 'Criar' }} campanha
               </h6>
             </q-card-section>
 
             <q-card-section class="row q-col-gutter-md">
               <div class="col-12 col-md-6">
                 <q-input
+                  label="Nome"
                   v-bind="$vInput"
-                  v-model="state.form.title"
-                  label="Titulo"
                   :rules="[requiredRule]"
+                  v-model="state.form.name"
                 />
               </div>
-              <div class="col-12 col-md-6">
-                <q-select
-                  label="Cliente"
-                  :rules="[requiredRule]"
-                  v-bind="$vSelect"
-                  v-model="state.form.clientId"
-                  :options="state.options.clients"
-                  option-value="id"
-                  :disable="!!state.form.id"
-                />
-              </div>
-              <div class="col-12" v-if="state.form.id">
+              <div class="col-12 col-md-6" v-if="state.form.id">
                 <q-select
                   label="Status"
                   :rules="[requiredRule]"
@@ -114,16 +87,50 @@
                   :options="statusOptions"
                 />
               </div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <p>Módulo SMS</p>
+
               <div class="col-12">
-                <q-uploader
-                  class="shadow-0 q-my-md full-width"
-                  bordered
-                  max-files="1"
-                  hide-upload-btn
-                  @added="addContactFile"
-                  @removed="removeContactFile"
-                  accept=".xlsx"
-                />
+                <q-select
+                  label="Mensagens"
+                  v-bind="$vSelect"
+                  v-model="state.form.menssageIds"
+                  :options="state.optionsData.messages"
+                  option-label="title"
+                  option-value="id"
+                  multiple
+                  use-input
+                  use-chips
+                  @filter="
+                    (v, update) =>
+                      update(
+                        () =>
+                          (state.options.messages = filterFn(
+                            v,
+                            'title',
+                            state.optionsData.messages,
+                          )),
+                      )
+                  "
+                >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>
+                          {{ scope.opt.title }}
+                        </q-item-label>
+                        <q-item-label caption>
+                          {{ scope.opt.message }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:selected-item="scope">
+                    <chip-select :scope="scope" label="title" />
+                  </template>
+                </q-select>
               </div>
             </q-card-section>
 
@@ -140,9 +147,8 @@
               <q-btn
                 color="primary"
                 label="Salvar"
-                type="submit"
                 unelevated
-                :disable="!state.form.file && !state.form.id"
+                type="submit"
                 :loading="loaderStatus(loader.edit)"
               />
             </q-card-actions>
@@ -153,33 +159,33 @@
   </q-page>
 </template>
 <script setup lang="ts">
+import ActionDialog from 'src/components/dialog/ActionDialog.vue'
+import ActionHeader from 'src/components/action-header/ActionHeader.vue'
+import StatusRow from 'src/components/table/StatusRow.vue'
 import { onMounted } from 'vue'
-import { messageSMSTableColumns } from './contactSMS.const'
-import { useContactSMS } from './useContactSMS'
+import { useCampaign } from './useCampaign'
+import { campaignTableColumns } from './campaign.const'
 import { requiredRule } from 'src/validations/form-rules/mixedRules.util'
 import { statusOptions } from 'src/constants/status.const'
 import VDialog from 'src/components/dialog/VDialog.vue'
-import ActionDialog from 'src/components/dialog/ActionDialog.vue'
-import StatusRow from 'src/components/table/StatusRow.vue'
-import ActionHeader from 'src/components/action-header/ActionHeader.vue'
+import { filterFn } from 'src/utils/filter.util'
+import ChipSelect from 'src/components/select/ChipSelect.vue'
 
 const {
   state,
-  loader,
   dialog,
+  loader,
   save,
   fetchList,
   toggleDialog,
   loaderStatus,
   confirmAction,
-  addContactFile,
   openEditDialog,
-  downloadContact,
   clearEditDialog,
-  downloadTemplate,
   openActionDialog,
-  removeContactFile,
-} = useContactSMS()
+} = useCampaign()
 
-onMounted(() => fetchList())
+onMounted(async () => {
+  await fetchList()
+})
 </script>

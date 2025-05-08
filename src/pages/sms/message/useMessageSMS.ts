@@ -5,6 +5,7 @@ import requester from 'src/helpers/requester/Requester.helper'
 import * as MessageSMSService from 'src/services/sms/messageSMS.service'
 import * as UserService from 'src/services/user.service'
 import * as TriggerWordService from 'src/services/sms/trigger-word/triggerWord.service'
+import * as CampaignService from 'src/services/campaign/campaign.service'
 import { cloneDeep } from 'src/utils/clone.util'
 import type { IMessageSMS } from 'src/types/sms/IMessageSMS.type'
 import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
@@ -33,12 +34,13 @@ export function useMessageSMS() {
   async function fetchList() {
     await requester.dispatch({
       callback: async () => {
-        state.value.list = await MessageSMSService.getAll()
-
         if (state.value.triggerWords.length == 0) {
           state.value.triggerWords = await TriggerWordService.getAll()
           state.value.options.clients = await UserService.getAll()
+          state.value.options.campaigns = await CampaignService.getAll()
         }
+
+        state.value.list = await MessageSMSService.getAll()
       },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível buscar os usuários',
@@ -57,11 +59,15 @@ export function useMessageSMS() {
             state.value.form.title,
             state.value.form.message,
             state.value.form.status,
+            state.value.form.alternativeMessages,
+            state.value.form.campaignId,
           )
         else
           await MessageSMSService.create(
             state.value.form.title,
             state.value.form.message,
+            state.value.form.alternativeMessages,
+            state.value.form.campaignId,
           )
       },
       successCallback: async () => {

@@ -54,81 +54,77 @@
           </template>
         </div>
 
-        <q-scroll-area
-          v-else
-          visible
-          v-bind="$vScrollArea"
-          style="height: 400px"
+        <q-table
+          flat
+          dense
+          bordered
+          :rows="listTriggerWords"
+          :columns="triggerWordTableColumns"
+          :filter="state.triggerSearch"
+          :loading="loaderStatus(loaderId)"
+          :rows-per-page-options="[10]"
         >
-          <div
-            v-for="(item, idx) in triggerWordList"
-            :key="idx"
-            class="q-mr-md"
-          >
-            <q-item v-ripple>
-              <q-item-section>
-                <q-item-label v-if="state.editTriggerWord.id == item.id">
-                  <q-input
-                    v-bind="$vInput"
-                    v-model="state.editTriggerWord.name"
-                  >
-                    <template v-slot:append>
-                      <q-btn
-                        flat
-                        round
-                        dense
-                        icon="close"
-                        @click.stop="state.editTriggerWord.id = ''"
-                      >
-                        <q-tooltip>Cancelar</q-tooltip>
-                      </q-btn>
-                      <q-btn
-                        flat
-                        round
-                        dense
-                        icon="check"
-                        @click.stop="emit('triggerWordSave', { id: item.id })"
-                      >
-                        <q-tooltip>Salvar</q-tooltip>
-                      </q-btn>
-                    </template>
-                  </q-input>
-                </q-item-label>
-                <q-item-label v-else>
-                  {{ item.name }}
-                </q-item-label>
-              </q-item-section>
+          <template #body-cell-name="props">
+            <q-td :props="props">
+              <template v-if="state.editTriggerWord.id == props.row.id">
+                <q-input v-bind="$vInput" v-model="state.editTriggerWord.name">
+                  <template v-slot:append>
+                    <q-btn
+                      flat
+                      round
+                      dense
+                      icon="close"
+                      @click.stop="state.editTriggerWord.id = ''"
+                    >
+                      <q-tooltip>Cancelar</q-tooltip>
+                    </q-btn>
+                    <q-btn
+                      flat
+                      round
+                      dense
+                      icon="check"
+                      @click.stop="
+                        emit('triggerWordSave', { id: props.row.id })
+                      "
+                    >
+                      <q-tooltip>Salvar</q-tooltip>
+                    </q-btn>
+                  </template>
+                </q-input>
+              </template>
+              <template v-else>
+                {{ props.row.name }}
+              </template>
+            </q-td>
+          </template>
 
-              <q-item-section side v-if="isAdmin()">
-                <div class="flex justify-center gap-md">
-                  <q-btn
-                    v-if="state.editTriggerWord.id != item.id"
-                    @click.stop="state.editTriggerWord = cloneDeep(item)"
-                    round
-                    flat
-                    dense
-                    color="white"
-                    icon="edit"
-                  >
-                    <q-tooltip>Editar</q-tooltip>
-                  </q-btn>
+          <template #body-cell-actions="props">
+            <q-td :props="props">
+              <q-btn
+                v-if="state.editTriggerWord.id != props.row.id"
+                @click.stop="state.editTriggerWord = cloneDeep(props.row)"
+                round
+                flat
+                dense
+                color="white"
+                icon="edit"
+              >
+                <q-tooltip>Editar</q-tooltip>
+              </q-btn>
 
-                  <q-btn
-                    round
-                    flat
-                    dense
-                    color="white"
-                    icon="delete"
-                    @dblclick.stop="emit('triggerWordDelete', item)"
-                  >
-                    <q-tooltip>Clique 2X para Deletar</q-tooltip>
-                  </q-btn>
-                </div>
-              </q-item-section>
-            </q-item>
-            <q-separator />
-          </div>
-        </q-scroll-area>
+              <q-btn
+                round
+                flat
+                dense
+                color="white"
+                icon="delete"
+                @dblclick.stop="emit('triggerWordDelete', props.row)"
+              >
+                <q-tooltip>Clique 2X para Deletar</q-tooltip>
+              </q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </q-card-section>
       <q-card-actions align="right">
         <q-btn
@@ -148,8 +144,8 @@ import { useLoader } from 'src/composables/useLoader'
 import { useRoles } from 'src/composables/useRoles'
 import { ITriggerWord } from 'src/types/sms/ITriggerWord.type'
 import { cloneDeep } from 'src/utils/clone.util'
-import { normalizeText } from 'src/utils/text.util'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+import { triggerWordTableColumns } from '../../messageSMS.const'
 
 interface IProps {
   dialogId: string
@@ -157,7 +153,7 @@ interface IProps {
   listTriggerWords: ITriggerWord[]
 }
 
-const props = defineProps<IProps>()
+defineProps<IProps>()
 const emit = defineEmits(['triggerWordSave', 'triggerWordDelete'])
 
 const { toggleDialog } = useDialog()
@@ -171,21 +167,5 @@ const state = ref({
     name: '',
   },
   newTriggerWord: '',
-})
-
-const triggerWordList = computed(() => {
-  const { triggerSearch } = state.value
-
-  if (!triggerSearch) return props.listTriggerWords
-
-  const lowerSearch = normalizeText(triggerSearch)
-
-  return props.listTriggerWords.filter((item) => {
-    const categoryMatches = lowerSearch
-      ? normalizeText(item.name).includes(lowerSearch)
-      : true
-
-    return categoryMatches
-  })
 })
 </script>

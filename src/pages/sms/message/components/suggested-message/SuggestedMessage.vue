@@ -7,7 +7,7 @@
     control-color="white"
     navigation
     padding
-    height="250px"
+    height="100%"
     class="text-white rounded-borders"
   >
     <q-carousel-slide
@@ -17,17 +17,20 @@
       class="column no-wrap flex-center"
     >
       <div class="q-mt-md text-center">{{ item }}</div>
-      <div class="flex gap-md q-mt-lg">
+      <div class="flex gap-md q-mt-sm q-mb-md">
         <q-btn
           color="negative"
           label="Reprovar"
           unelevated
+          dense
           @click="handleRemove(idx)"
-        />
-        <q-btn
+          />
+          <q-btn
           color="positive"
           label="Aprovar"
           unelevated
+          dense
+          :disable="disableApproved"
           @click="
             () => {
               emit('addSuggestedMessage', item)
@@ -44,6 +47,7 @@ import { ref, watch } from 'vue'
 
 interface IProps {
   texts: string[]
+  disableApproved: boolean
 }
 
 interface IState {
