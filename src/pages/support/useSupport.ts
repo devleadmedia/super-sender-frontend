@@ -5,90 +5,23 @@ import requester from 'src/helpers/requester/Requester.helper'
 import * as SupportService from 'src/services/support/support.service'
 import * as UserService from 'src/services/user.service'
 import { cloneDeep } from 'src/utils/clone.util'
-import type { IUser } from 'src/types/user/IUser.type'
 import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
-import { IMessageSupport, ISupport } from 'src/types/support/ISupport.type'
-import { IBasicEntity } from 'src/types/IBasicEntity.type'
-import { SupportStatus } from 'src/enums/support/SupportStatus.enum'
-import { QScrollArea } from 'quasar'
-import { LIMIT_MB, MAX_LIMIT_MB } from './support.const'
+import { ISupport } from 'src/types/support/ISupport.type'
+import { QInfiniteScroll } from 'quasar'
+import {
+  initState,
+  dialog,
+  IState,
+  loader,
+  LIMIT_MB,
+  MAX_LIMIT_MB,
+} from './support.const'
 import { useNotify } from 'src/composables/useNotify'
 
-export interface IState {
-  options: {
-    clients: IUser[]
-  }
-  openRequestForm: {
-    title: string
-    description: string
-    files: File[] | null
-  }
-  form: {
-    id: string
-    title: string
-    description: string
-    status: SupportStatus
-    requester: IBasicEntity<string>
-    messages: IMessageSupport[]
-    date: string
-    currentMessage: string
-    files: File[]
-    previews: string[]
-  }
-  list: ISupport[]
-  filter: string
-  actionType: ActionDialogOptions
-  actionsData: ISupport[]
-}
-
-const scrollArea = ref<QScrollArea | null>(null)
+const infiniteScroll = ref<QInfiniteScroll | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 export function useSupport() {
-  const initState: IState = {
-    openRequestForm: {
-      title: '',
-      description: '',
-      files: [],
-    },
-    form: {
-      id: '',
-      requester: {
-        id: '',
-        name: '',
-      },
-      previews: [],
-      title: '',
-      description: '',
-      status: SupportStatus.cancel,
-      messages: [],
-      currentMessage: '',
-      date: '',
-      files: [],
-    },
-    options: {
-      clients: [],
-    },
-    actionsData: [],
-    actionType: ActionDialogOptions.delete,
-    filter: '',
-    list: [],
-  }
-
-  const dialog = {
-    edit: 'edit-1e12f342f',
-    openRequest: 'openRequest-1f34g34g9k',
-    action: 'action-f3223f',
-  }
-
-  const loader = {
-    list: 'list-1e12f342f',
-    openRequest: 'openRequest-1f34g34g9k',
-    edit: 'edit-1e12f342f',
-    action: 'action-f3223f',
-    downloadContact: 'downloadContact-f3223f',
-  }
-
   const state = ref<IState>(cloneDeep(initState))
   const { createDialog, toggleDialog } = useDialog()
   const { loaderStatus } = useLoader()
@@ -140,6 +73,7 @@ export function useSupport() {
       },
       successCallback: () => {
         scrollToBottom()
+        clearSender()
       },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível enviar a mensagem',
@@ -225,7 +159,12 @@ export function useSupport() {
   }
 
   function scrollToBottom() {
-    scrollArea.value?.setScrollPercentage('vertical', 100, 0)
+    const infiniteScrollHTML = infiniteScroll.value?.$el as HTMLDivElement
+
+    infiniteScrollHTML.scroll({
+      behavior: 'smooth',
+      top: infiniteScrollHTML.scrollHeight,
+    })
   }
 
   function triggerFileInput() {
@@ -291,9 +230,13 @@ export function useSupport() {
       return a + b.size
     }, 0)
 
-    console.log(total)
-
     return total > MAX_LIMIT_MB * 1024 * 1024
+  }
+
+  function clearSender() {
+    state.value.form.currentMessage = ''
+    state.value.form.previews = []
+    state.value.form.files = []
   }
 
   return {
@@ -301,7 +244,7 @@ export function useSupport() {
     dialog,
     loader,
     fileInput,
-    scrollArea,
+    infiniteScroll,
     create,
     fetchList,
     sendMessage,

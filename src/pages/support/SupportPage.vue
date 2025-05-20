@@ -135,11 +135,7 @@
       </template>
     </v-dialog>
 
-    <v-dialog
-      :dialog-id="dialog.edit"
-      @before-hide="clearEditDialog"
-      @show="scrollToBottom()"
-    >
+    <v-dialog :dialog-id="dialog.edit" @before-hide="clearEditDialog">
       <template #default>
         <q-card style="max-width: 600px" class="shadow-0 full-width" bordered>
           <q-card-section class="q-py-none q-pt-sm">
@@ -194,10 +190,11 @@
           <q-separator />
 
           <q-card-section>
-            <q-scroll-area
-              ref="scrollArea"
-              class="full-width"
+            <q-infinite-scroll
+              reverse
+              class="full-width overflow-auto"
               style="height: 400px"
+              ref="infiniteScroll"
             >
               <div
                 class="q-mx-md"
@@ -225,7 +222,7 @@
                   :stamp="formatDate(state.form.date)"
                 />
               </div>
-            </q-scroll-area>
+            </q-infinite-scroll>
           </q-card-section>
           <q-separator />
 
@@ -277,7 +274,7 @@
               algumas imagens
             </p>
           </q-card-section>
-          <q-card-section>
+          <q-card-section v-if="state.form.status == SupportStatus.pending">
             <q-input
               v-bind="$vInput"
               v-model="state.form.currentMessage"
@@ -336,7 +333,7 @@ const {
   loader,
   dialog,
   fileInput,
-  scrollArea,
+  infiniteScroll,
   sendMessage,
   create,
   fetchList,
@@ -345,7 +342,6 @@ const {
   loaderStatus,
   confirmAction,
   openEditDialog,
-  scrollToBottom,
   clearEditDialog,
   triggerFileInput,
   handleFileChange,

@@ -2,6 +2,7 @@ import { api } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { IMessageSupport, ISupport } from 'src/types/support/ISupport.type'
 import { SupportStatus } from 'src/enums/support/SupportStatus.enum'
+import { random } from 'lodash'
 
 export async function getAll(): Promise<ISupport[]> {
   /* const { data } = await api.get('/support')
@@ -15,7 +16,11 @@ export async function getAll(): Promise<ISupport[]> {
     data.push({
       id: `${idx}`,
       date: new Date().toISOString(),
-      status: SupportStatus.pending,
+      status: [
+        SupportStatus.pending,
+        SupportStatus.cancel,
+        SupportStatus.resolved,
+      ][random(0, 2, false)]!,
       title: `Titulo do chamado - ${idx}`,
       description: `Descrição do chamado ${idx}`,
       requester: {
@@ -119,13 +124,19 @@ export async function sendMessage(
     formData.append('files', files[idx] as File)
   }
 
-  const { data } = await api.post(`/support/${id}`, formData, {
+  /* const { data } = await api.post(`/support/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-  })
+  }) */
 
-  return data
+  return {
+    date: new Date().toISOString(),
+    id: id + 1,
+    images: [],
+    message: 'Mensagem de teste enviada',
+    userId: '0',
+  }
 }
 
 export async function deleteItem(ids: string[]) {
