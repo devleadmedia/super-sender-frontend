@@ -26,19 +26,20 @@
         :icon="menuItem.icon"
         :label="menuItem.name"
       >
-        <q-item
-          v-for="(itemChild, idx) in menuItem.children"
-          :key="idx"
-          clickable
-          v-ripple
-          icon
-          :to="itemChild.to"
-        >
-          <div class="text-h5 q-mr-sm">•</div>
-          <q-item-section>
-            {{ itemChild.name }}
-          </q-item-section>
-        </q-item>
+        <template v-for="(itemChild, idx) in menuItem.children" :key="idx">
+          <q-item
+            v-if="handleRoles(itemChild.roles)"
+            clickable
+            v-ripple
+            icon
+            :to="itemChild.to"
+          >
+            <div class="text-h5 q-mr-sm">•</div>
+            <q-item-section>
+              {{ itemChild.name }}
+            </q-item-section>
+          </q-item>
+        </template>
       </q-expansion-item>
       <q-separator :key="'sep' + index" v-if="menuItem.separator" />
     </template>
@@ -59,6 +60,8 @@ interface IProps {
 defineProps<IProps>()
 
 function handleRoles(roles: Roles[]) {
+  if (roles.length == 0) return true
+
   const { getLocalStorage } = useLocalStorage()
 
   const userRoles: Roles[] =

@@ -102,6 +102,13 @@ const routes: RouteRecordRaw[] = [
           import('src/pages/campaign/CampaignPage.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
+      {
+        path: 'support',
+        name: 'support',
+        component: () =>
+          import('src/pages/support/SupportPage.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
     ],
   },
   // Always leave this as last one,

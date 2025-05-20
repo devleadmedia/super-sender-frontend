@@ -36,6 +36,17 @@
                   </q-item-label>
                 </q-item-section>
               </q-item>
+              <q-item
+                clickable
+                v-ripple
+                dense
+                @click="router.push({ name: 'support' })"
+              >
+                <q-item-section avatar>
+                  <q-icon name="support_agent" size="sm" />
+                </q-item-section>
+                <q-item-section>Suporte</q-item-section>
+              </q-item>
               <q-item>
                 <q-toggle
                   v-model="state.theme"
