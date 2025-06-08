@@ -17,6 +17,10 @@ export default boot(({ app }) => {
     bordered: true,
     class: 'shadow-0',
   }
+  app.config.globalProperties.$vMenu = {
+    bordered: true,
+    class: 'shadow-0',
+  }
   app.config.globalProperties.$vScrollArea = {
     'thumb-style': {
       borderRadius: '7px',

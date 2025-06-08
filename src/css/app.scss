@@ -1,5 +1,10 @@
 // app global css in SCSS form
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   margin: 0 auto;
   max-width: $stretch-max-width;
@@ -55,4 +60,11 @@
     margin-top: 0px;
     margin-bottom: 0px;
   }
+}
+
+/* SCROLL */
+
+body {
+  scrollbar-color: rgba(rgb(255, 255, 255), 0.2) transparent;
+  scrollbar-width: thin;
 }
