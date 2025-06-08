@@ -109,6 +109,13 @@ const routes: RouteRecordRaw[] = [
           import('src/pages/support/SupportPage.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
+      {
+        path: 'chatSMS',
+        name: 'chatSMS',
+        component: () =>
+          import('src/pages/sms/chat/ChatSMS.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
     ],
   },
   // Always leave this as last one,

@@ -1,3 +1,25 @@
+/**
+ * Formata uma string como número de celular brasileiro no padrão (XX) XXXXX-XXXX
+ * @param phoneNumber - O número a ser formatado (pode conter ou não dígitos não numéricos)
+ * @returns O número formatado ou a string original se não tiver dígitos suficientes
+ */
+export function formatPhoneNumber(phoneNumber: string): string {
+  // Remove todos os caracteres não numéricos
+  const cleaned = phoneNumber.replace(/\D/g, '')
+
+  // Verifica se tem quantidade suficiente de dígitos (11 para celular com 9 dígitos)
+  if (cleaned.length === 11) {
+    // Formata como (XX) XXXXX-XXXX
+    return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+  } else if (cleaned.length === 10) {
+    // Formata números antigos sem o 9: (XX) XXXX-XXXX
+    return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+  }
+
+  // Retorna original se não tiver dígitos suficientes para formatar
+  return phoneNumber
+}
+
 export function normalizeText(text: string) {
   return text
     .normalize('NFD')

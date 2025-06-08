@@ -50,6 +50,14 @@ export const menuOptions: IMenuOptions[] = [
         roles: [],
         children: [],
       },
+      {
+        icon: '',
+        name: 'Chat',
+        separator: false,
+        to: { name: 'chatSMS' },
+        roles: [],
+        children: [],
+      },
     ],
   },
   {
