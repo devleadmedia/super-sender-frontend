@@ -26,7 +26,7 @@
           class="text-red"
           clickable
           v-close-popup
-          @click="emit('openActionDialog', 'delete')"
+          @click="emit('openActionDialog', ActionDialogOptions.delete)"
         >
           <q-item-section>
             <q-item-label> Deletar </q-item-label>
@@ -36,7 +36,7 @@
           :disable="hasActive"
           clickable
           v-close-popup
-          @click="emit('openActionDialog', 'disable')"
+          @click="emit('openActionDialog', ActionDialogOptions.disable)"
         >
           <q-item-section>
             <q-item-label> Desabilitar </q-item-label>
@@ -50,6 +50,7 @@
 </template>
 <script setup lang="ts">
 import { useLoader } from 'src/composables/useLoader'
+import { ActionDialogOptions } from 'src/enums/ActionDialogOptions.enum'
 
 interface IProps {
   loaderId: string
