@@ -24,6 +24,7 @@
               <q-icon name="person" size="24px" />
             </q-avatar>
           </q-btn>
+
           <q-menu class="q-card--bordered shadow-0">
             <q-list style="min-width: 150px" dense>
               <q-item class="q-my-xs non-selectable">

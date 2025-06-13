@@ -67,8 +67,8 @@ const { loaderStatus } = useLoader()
 
 async function handleLogin() {
   await requester.dispatch({
-    callback: async () => {
-      await login(state.value.email, state.value.password)
+    callback: () => {
+      login(state.value.email, state.value.password)
     },
     errorMessageTitle: 'Houve um erro',
     errorMessage: 'Não foi possível realizar o login',

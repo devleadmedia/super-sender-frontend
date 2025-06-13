@@ -2,6 +2,8 @@
   <q-page class="container q-layout-padding">
     <h1 class="text-h5">Templates de mensagem - SMS</h1>
 
+    {{ state.actionType }}
+
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
         outlined
@@ -115,10 +117,10 @@
               </div>
 
               <div class="col-12">
-                <message-input
+                <message-sms
                   v-model="state.form.message"
                   :list-shadow-ban="state.triggerWords.map((t) => t.name)"
-                  @info="hasErrorMessage"
+                  @errors="hasErrorMessage"
                 />
               </div>
             </q-card-section>
@@ -215,7 +217,7 @@ import ActionDialog from 'src/components/dialog/ActionDialog.vue'
 import VDialog from 'src/components/dialog/VDialog.vue'
 import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 import StatusRow from 'src/components/table/StatusRow.vue'
-import MessageInput from './components/message-input/MessageInput.vue'
+import MessageSms from 'src/components/message-sms/MessageSMS.vue'
 import TriggerWordDialog from './components/trigger-word/TriggerWordDialog.vue'
 import SuggestedMessage from './components/suggested-message/SuggestedMessage.vue'
 

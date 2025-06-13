@@ -57,7 +57,7 @@ function createErrorHighlighterPlugin(
 
         const decorations: Decoration[] = []
 
-        if (options.errorTerms.length === 0) return DecorationSet.empty
+        // if (options.errorTerms.length === 0) return DecorationSet.empty
 
         const multiWordTerms = options.normalizedTerms.filter(
           (t) => t.isMultiWord,
@@ -113,6 +113,8 @@ const handleVariables = (
     while ((index = text.indexOf(variable, index)) !== -1) {
       const from = pos + index
       const to = from + variable.length
+
+      console.log(`Highlighting variable: ${variable} at ${from}-${to}`)
 
       decorations.push(
         Decoration.inline(from, to, {

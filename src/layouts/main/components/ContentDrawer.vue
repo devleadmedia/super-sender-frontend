@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area class="fit">
-    <q-item style="height: 60px" :active="false" to="/">
+    <q-item style="height: 60px" :active="false" :to="{ name: 'home' }">
       <q-img :src="logo" width="130px" v-if="!mini" />
       <q-img :src="logoSimple" fit="contain" v-else />
     </q-item>

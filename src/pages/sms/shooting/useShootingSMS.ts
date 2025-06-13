@@ -191,7 +191,6 @@ export function useShootingSMS() {
       successCallback: () => {
         state.value.step = step.cost
       },
-      successMessageTitle: `${id ? 'Editado' : 'Cadastrado'} com sucesso`,
       errorMessageTitle: 'Houve um erro',
       errorMessage: `Não foi possível ${
         state.value.form.id ? 'editar' : 'cadastrar'

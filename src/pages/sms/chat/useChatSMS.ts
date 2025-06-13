@@ -3,6 +3,7 @@ import { useLoader } from 'src/composables/useLoader'
 import { ref } from 'vue'
 import requester from 'src/helpers/requester/Requester.helper'
 import * as ChatSMS from 'src/services/sms/chat/chatSMS.service'
+import * as TriggerWordsSMS from 'src/services/sms/trigger-word/triggerWord.service'
 import { cloneDeep } from 'src/utils/clone.util'
 import { QInfiniteScroll } from 'quasar'
 import { initState, dialog, IState, loader } from './chatSMS.const'
@@ -19,7 +20,13 @@ export function useChatSMS() {
   async function fetchList() {
     await requester.dispatch({
       callback: async () => {
-        state.value.list = await ChatSMS.getAllContacts()
+        const [triggerWords, list] = await Promise.all([
+          await TriggerWordsSMS.getAll(),
+          await ChatSMS.getAllContacts(),
+        ])
+
+        state.value.triggerWords = triggerWords
+        state.value.list = list
       },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível buscar os usuários',
@@ -32,7 +39,23 @@ export function useChatSMS() {
       callback: async () => {
         if (!state.value.chat) throw new Error('Not data user')
 
-        const response = await ChatSMS.sendMessage(
+        state.value.chat.totalCredits = await ChatSMS.sendMessage(
+          state.value.chat.contact.id,
+          state.value.chat.currentMessage,
+        )
+      },
+      errorMessageTitle: 'Houve um erro',
+      errorMessage: 'Não foi possível enviar a mensagem',
+      loaders: [loader.sendMessage],
+    })
+  }
+
+  async function confirmSendMessage() {
+    await requester.dispatch({
+      callback: async () => {
+        if (!state.value.chat) throw new Error('Not data user')
+
+        const response = await ChatSMS.confirmSendMessage(
           state.value.chat.contact.id,
           state.value.chat.currentMessage,
         )
@@ -41,11 +64,53 @@ export function useChatSMS() {
       },
       successCallback: () => {
         scrollToBottom()
-        clearSender()
+        cancelSendMessage()
       },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível enviar a mensagem',
-      loaders: [loader.sendMessage],
+      loaders: [loader.confirmSendMessage],
+    })
+  }
+
+  async function favoriteChat(contactId: string) {
+    await requester.dispatch({
+      callback: async () => {
+        await ChatSMS.favorite(contactId)
+      },
+      successCallback: () => {
+        const idx = state.value.list.findIndex(
+          (item) => item.contactId == contactId,
+        )
+
+        const favorite = !state.value.list[idx]!.favorite
+
+        state.value.list[idx]!.favorite = favorite
+        state.value.chat!.contact.favorite = favorite
+      },
+      errorMessageTitle: 'Houve um erro',
+      errorMessage: 'Não foi possível favoritar a mensagem',
+      loaders: [loader.favorite],
+    })
+  }
+
+  async function deleteChat(contactId: string) {
+    await requester.dispatch({
+      callback: async () => {
+        await ChatSMS.deleteItem(contactId)
+      },
+      successCallback: () => {
+        state.value.list = state.value.list.filter(
+          (item) => item.contactId != contactId,
+        )
+
+        if (state.value.chat?.contact.contactId == contactId)
+          state.value.chat = null
+
+        toggleDialog(dialog.delete)
+      },
+      errorMessageTitle: 'Houve um erro',
+      errorMessage: 'Não foi possível deletar a mensagem',
+      loaders: [loader.delete],
     })
   }
 
@@ -71,6 +136,8 @@ export function useChatSMS() {
       currentMessage: '',
       messagens: [],
       search: '',
+      totalCredits: null,
+      errors: 0,
     }
 
     await getMessageById(contact.id)
@@ -85,17 +152,26 @@ export function useChatSMS() {
     })
   }
 
-  function clearSender() {
-    state.value.chat = cloneDeep(initState.chat)
-  }
-
   function isActiveOption(value: 'all' | 'unRead' | 'favorites') {
     return state.value.sidebar.filterBy === value ? 'primary' : 'accent'
   }
 
   function setFilterByOption(value: 'all' | 'unRead' | 'favorites') {
-    console.log('VAP')
     state.value.sidebar.filterBy = value
+  }
+
+  function cancelSendMessage() {
+    state.value.chat!.currentMessage = ''
+    state.value.chat!.totalCredits = null
+  }
+
+  function resetState() {
+    state.value = cloneDeep(initState)
+  }
+
+  function openDeleteDialog(contact: IContactChatSMS) {
+    state.value.actionData = contact
+    toggleDialog(dialog.delete)
   }
 
   return {
@@ -105,13 +181,19 @@ export function useChatSMS() {
     infiniteScroll,
     openChat,
     fetchList,
+    deleteChat,
+    resetState,
     sendMessage,
     toggleDialog,
+    favoriteChat,
     createDialog,
     loaderStatus,
     scrollToBottom,
     isActiveOption,
     getMessageById,
+    openDeleteDialog,
     setFilterByOption,
+    cancelSendMessage,
+    confirmSendMessage,
   }
 }

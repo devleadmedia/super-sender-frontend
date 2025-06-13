@@ -85,7 +85,7 @@
                 size="10px"
               />
 
-              <div :id="`more-icon-${idx}`">
+              <div @click.stop :id="`more-icon-${idx}`">
                 <q-btn
                   class="btn-more-options"
                   flat
@@ -93,7 +93,7 @@
                   dense
                   size="10px"
                 >
-                  <MenuOptions :target="`#more-icon-${idx}`" />
+                  <menu-options :target="`#more-icon-${idx}`" :contact="item" />
                 </q-btn>
               </div>
             </span>
