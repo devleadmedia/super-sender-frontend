@@ -1,10 +1,10 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { Status } from 'src/enums/Status.enum'
 import type { ISenderByClient } from 'src/types/sender/ISenderByClient.type'
 
 export async function getAll(): Promise<ISenderByClient[]> {
-  /* const { data } = await api.get('/senderForClient/table')
+  /* const { data } = await httpClientAxios.get('/senderForClient/table')
   return data */
 
   await fakePromise(1000)
@@ -22,7 +22,7 @@ export async function getAll(): Promise<ISenderByClient[]> {
 }
 
 export async function create(clientId: string, senderIds: string[]) {
-  await api.post('/senderForClient', { clientId, senderIds })
+  await httpClientAxios.post('/senderForClient', { clientId, senderIds })
 }
 
 export async function save(
@@ -31,7 +31,7 @@ export async function save(
   clientId: string,
   senderIds: string[],
 ) {
-  await api.put(`/senderForClient/${id}`, {
+  await httpClientAxios.put(`/senderForClient/${id}`, {
     status,
     clientId,
     senderIds,
@@ -39,13 +39,13 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/senderForClient/`, {
+  await httpClientAxios.delete(`/senderForClient/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/senderForClient/disable', {
+  await httpClientAxios.patch('/senderForClient/disable', {
     ids,
   })
 }

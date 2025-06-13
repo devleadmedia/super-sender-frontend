@@ -1,11 +1,11 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { Status } from 'src/enums/Status.enum'
 import type { ISender } from 'src/types/sender/ISender.type'
 import { random } from 'lodash'
 
 export async function getAll(): Promise<ISender[]> {
-  /* const { data } = await api.get('/sender')
+  /* const { data } = await httpClientAxios.get('/sender')
   return data */
 
   await fakePromise(1000)
@@ -30,7 +30,7 @@ export async function create(file: File) {
 
   formData.append('file', file)
 
-  await api.post('/sender/', formData, {
+  await httpClientAxios.post('/sender/', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -43,7 +43,7 @@ export async function save(
   number: string,
   operator: string,
 ) {
-  await api.put(`/sender/${id}`, {
+  await httpClientAxios.put(`/sender/${id}`, {
     ddd,
     number,
     operator,
@@ -51,13 +51,13 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/sender/`, {
+  await httpClientAxios.delete(`/sender/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/sender/disable', {
+  await httpClientAxios.patch('/sender/disable', {
     ids,
   })
 }

@@ -1,9 +1,9 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { ITriggerWord } from 'src/types/sms/ITriggerWord.type'
 
 export async function getAll(): Promise<ITriggerWord[]> {
-  /* const { data } = await api.get('/trigger-word/sms/')
+  /* const { data } = await httpClientAxios.get('/trigger-word/sms/')
   return data */
 
   await fakePromise(1000)
@@ -149,19 +149,17 @@ export async function getAll(): Promise<ITriggerWord[]> {
 }
 
 export async function create(name: string) {
-  await api.post('/trigger-word/sms', {
+  await httpClientAxios.post('/trigger-word/sms', {
     name,
   })
 }
 
 export async function save(id: string, name: string) {
-  await api.put(`/trigger-word/sms/${id}`, {
+  await httpClientAxios.put(`/trigger-word/sms/${id}`, {
     name,
   })
 }
 
 export async function deleteItem(id: string) {
-  await api.delete(`/trigger-word/sms/`, {
-    data: { id },
-  })
+  await httpClientAxios.delete<void>(`/trigger-word/sms/${id}`)
 }

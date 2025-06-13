@@ -1,9 +1,9 @@
-// import { api } from 'src/boot/axios'
+// import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import type { ICarrier } from 'src/types/sms/ICarrier.type'
 
 export async function getAll(): Promise<ICarrier[]> {
-  /* const { data } = await api.get('/carrier')
+  /* const { data } = await httpClientAxios.get('/carrier')
   return data */
 
   await fakePromise(1000)

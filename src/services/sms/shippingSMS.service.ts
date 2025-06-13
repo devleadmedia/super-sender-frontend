@@ -3,7 +3,7 @@ import { random } from 'lodash'
 import type { IShippingSMS } from 'src/types/sms/IShippingSMS.type'
 import { shippingStatusOptions } from 'src/constants/shipping/shippingStatusSMS.const'
 import { ShippingStatusSMS } from 'src/enums/shipping/ShippingStatusSMS.enum'
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 
 export async function getAll(
   shootingId: string,
@@ -13,7 +13,7 @@ export async function getAll(
   status: ShippingStatusSMS[],
   reply?: boolean,
 ): Promise<IShippingSMS[]> {
-  /* const { data } = await api.get(`/shipping/sms/${shootingId}`, {
+  /* const { data } = await httpClientAxios.get(`/shipping/sms/${shootingId}`, {
     data: {
       search,
       code,
@@ -73,6 +73,6 @@ export async function getAll(
 export async function exportItem(id: string): Promise<File> {
   await fakePromise(1000)
 
-  const { data } = await api.post(`/shipping/sms/export/${id}`)
+  const { data } = await httpClientAxios.post<File>(`/shipping/sms/export/${id}`)
   return data
 }

@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import type {
   IDataEmail,
   IDataSMS,
@@ -18,7 +18,7 @@ import type { ShippingType } from 'src/enums/ShippingType.enum'
 
 export async function getTablePrice(): Promise<ITablePriceResult> {
   /* DEVE PESQUISAR USUARIO PELO TOKEN */
-  /* const { data } = await api.get('/price/table')
+  /* const { data } = await httpClientAxios.get('/price/table')
   return data */
 
   await fakePromise(1000)
@@ -77,7 +77,7 @@ export async function getTablePrice(): Promise<ITablePriceResult> {
 }
 
 export async function getAll(): Promise<IPrice[]> {
-  /* const { data } = await api.get('/price')
+  /* const { data } = await httpClientAxios.get('/price')
   return data */
   await fakePromise(1000)
   return [
@@ -156,7 +156,7 @@ export async function create(
   tablePriceEmail: ITablePrice<IDataEmail>[],
   tablePriceWhatsapp: ITablePrice<IDataWhatsapp>[],
 ) {
-  await api.post('/price', {
+  await httpClientAxios.post('/price', {
     shippingTypeStep,
     shippingType,
     clientId,
@@ -177,7 +177,7 @@ export async function save(
   tablePriceEmail: ITablePrice<IDataEmail>[],
   tablePriceWhatsapp: ITablePrice<IDataWhatsapp>[],
 ) {
-  await api.put(`/price/${id}`, {
+  await httpClientAxios.put(`/price/${id}`, {
     shippingTypeStep,
     shippingType,
     clientId,
@@ -189,13 +189,13 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/price/`, {
+  await httpClientAxios.delete(`/price/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/price/disable', {
+  await httpClientAxios.patch('/price/disable', {
     ids,
   })
 }

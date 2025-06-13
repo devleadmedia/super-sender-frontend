@@ -1,11 +1,11 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { IMessageSupport, ISupport } from 'src/types/support/ISupport.type'
 import { SupportStatus } from 'src/enums/support/SupportStatus.enum'
 import { random } from 'lodash'
 
 export async function getAll(): Promise<ISupport[]> {
-  /* const { data } = await api.get('/support')
+  /* const { data } = await httpClientAxios.get('/support')
   return data */
 
   await fakePromise(1000)
@@ -102,7 +102,7 @@ export async function create(
     formData.append('files', files[idx] as File)
   }
 
-  await api.post('/support', formData, {
+  await httpClientAxios.post('/support', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -124,7 +124,7 @@ export async function sendMessage(
     formData.append('files', files[idx] as File)
   }
 
-  /* const { data } = await api.post(`/support/${id}`, formData, {
+  /* const { data } = await httpClientAxios.post(`/support/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -141,19 +141,19 @@ export async function sendMessage(
 
 export async function deleteItem(ids: string[]) {
   await fakePromise(1500)
-  await api.delete(`/support/`, {
+  await httpClientAxios.delete(`/support/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
   await fakePromise(1500)
-  await api.patch('/support/disable', {
+  await httpClientAxios.patch('/support/disable', {
     ids,
   })
 }
 
 export async function updateStatus(id: string, status: SupportStatus) {
   await fakePromise(1500)
-  await api.put(`/support/status/${id}`, { status })
+  await httpClientAxios.put(`/support/status/${id}`, { status })
 }

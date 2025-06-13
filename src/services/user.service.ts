@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { Roles } from 'src/enums/Roles.enum'
 import { ShippingType } from 'src/enums/ShippingType.enum'
 import { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
@@ -7,7 +7,7 @@ import type { IUser } from 'src/types/user/IUser.type'
 import { fakePromise } from 'src/utils/fakePromise.util'
 
 export async function getAll(): Promise<IUser[]> {
-  /* const { data } = await api.get('/users')
+  /* const { data } = await httpClientAxios.get('/users')
   return data.users */
   await fakePromise(1000)
   return [
@@ -55,7 +55,7 @@ export async function create(
   shootingPermissions: ShootingPermissions[],
   password: string,
 ) {
-  await api.post('/users', {
+  await httpClientAxios.post('/users', {
     email,
     name,
     roles,
@@ -73,7 +73,7 @@ export async function save(
   roles: Roles[],
   shootingPermissions: ShootingPermissions[],
 ) {
-  await api.put(`/users/${id}`, {
+  await httpClientAxios.put(`/users/${id}`, {
     email,
     name,
     password,
@@ -84,13 +84,13 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/users/`, {
+  await httpClientAxios.delete(`/users/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/users/disable', {
+  await httpClientAxios.patch('/users/disable', {
     ids,
   })
 }

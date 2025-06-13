@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import type { Status } from 'src/enums/Status.enum'
 import { random } from 'lodash'
@@ -6,7 +6,7 @@ import type { IMessageSMS } from 'src/types/sms/IMessageSMS.type'
 import { statusOptions } from 'src/constants/status.const'
 
 export async function getAll(): Promise<IMessageSMS[]> {
-  /* const { data } = await api.get('/message/sms/table')
+  /* const { data } = await httpClientAxios.get('/message/sms/table')
   return data */
 
   await fakePromise(1)
@@ -35,7 +35,7 @@ export async function create(
   alternativeMessages: string[],
   campaignId: string,
 ) {
-  await api.post('/message/sms', {
+  await httpClientAxios.post('/message/sms', {
     title,
     message,
     alternativeMessages,
@@ -51,7 +51,7 @@ export async function save(
   alternativeMessages: string[],
   campaignId: string,
 ) {
-  await api.put(`/message/sms/${id}`, {
+  await httpClientAxios.put(`/message/sms/${id}`, {
     title,
     message,
     status,
@@ -61,19 +61,19 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/message/sms/`, {
+  await httpClientAxios.delete(`/message/sms/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/message/sms/disable', {
+  await httpClientAxios.patch('/message/sms/disable', {
     ids,
   })
 }
 
 export async function getAlternativeMessages(text: string): Promise<string[]> {
-  /* const { data } = await api.post('/message/sms/alternative-messages', {
+  /* const { data } = await httpClientAxios.post('/message/sms/alternative-messages', {
     text,
   }) */
 

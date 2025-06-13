@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { random } from 'lodash'
 import type { IShootingSMS } from 'src/types/sms/IShootingSMS.type'
@@ -13,7 +13,7 @@ import { Status } from 'src/enums/Status.enum'
 import { IPaginationResult } from 'src/types/pagination/IPaginationResult.type'
 
 export async function confirmShooting() {
-  await api.post('/shooting/sms/confirm')
+  await httpClientAxios.post('/shooting/sms/confirm')
 }
 
 export async function getAll(
@@ -30,7 +30,7 @@ export async function getAll(
   status?: ShootingStatusSMS,
   user?: string,
 ): Promise<IPaginationResult<IShootingSMS>> {
-  /* const { data } = await api.get('/shooting/sms', {
+  /* const { data } = await httpClientAxios.get('/shooting/sms', {
     data: {
       search,
       startDate,
@@ -108,8 +108,8 @@ export async function create(
   status: ShootingStatusSMS,
   campaignId: string,
   contactIds: string[],
-) {
-  /* await api.post('/shooting/sms', {
+): Promise<number | null> {
+  /* await httpClientAxios.post('/shooting/sms', {
     date,
     name,
     typeShot,
@@ -146,8 +146,8 @@ export async function save(
   status: ShootingStatusSMS,
   campaignId: string,
   contactIds: string[],
-) {
-  /* await api.put(`/shooting/sms/${id}`, {
+): Promise<number | null> {
+  /* await httpClientAxios.put(`/shooting/sms/${id}`, {
     date,
     name,
     typeShot,
@@ -176,25 +176,25 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/shooting/sms/`, {
+  await httpClientAxios.delete(`/shooting/sms/`, {
     data: { ids },
   })
 }
 
 export async function pause(ids: string[]) {
-  await api.patch('/shooting/sms/pause', {
+  await httpClientAxios.patch('/shooting/sms/pause', {
     ids,
   })
 }
 
 export async function play(ids: string[]) {
-  await api.patch('/shooting/sms/pause', {
+  await httpClientAxios.patch('/shooting/sms/pause', {
     ids,
   })
 }
 
 export async function cancel(ids: string[]) {
-  await api.patch('/shooting/sms/pause', {
+  await httpClientAxios.patch('/shooting/sms/pause', {
     ids,
   })
 }

@@ -1,4 +1,4 @@
-// import { api } from 'src/boot/axios'
+// import { httpClientAxios } from 'src/boot/axios'
 import { random } from 'lodash'
 import { shippingTypeOptions } from 'src/constants/shippingType.const'
 import type { IStatement } from 'src/types/statement/IStatement.type'
@@ -9,7 +9,7 @@ export async function getAll(userId?: number): Promise<IStatement[]> {
     - UTILIZE O TOKEN PARA OBTER O ID DO USUARIO
     - DEVE RECEBER UM PARAMETRO DE USERID, CASO RECEBA DEVE TRAZER O EXTRATO DO USUARIO
 
-    const { data } = await api.get('/statement', {
+    const { data } = await httpClientAxios.get('/statement', {
       paramas: userId
     })
     return data.users

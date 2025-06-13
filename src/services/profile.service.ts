@@ -1,5 +1,4 @@
-// import { api } from 'src/boot/axios'
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import type { IProfile } from 'src/types/user/IProfile.type'
 import { fakePromise } from 'src/utils/fakePromise.util'
 
@@ -9,7 +8,7 @@ export async function save(
   name: string,
   password: string,
 ) {
-  await api.put(`/users/${id}`, {
+  await httpClientAxios.put(`/users/${id}`, {
     id,
     email,
     name,
@@ -26,7 +25,7 @@ export async function save(
 
 export async function getProfile(): Promise<IProfile> {
   /* DEVE PESQUISAR USUARIO PELO TOKEN */
-  /* const { data } = await api.get('/users/profile')
+  /* const { data } = await httpClientAxios.get('/users/profile')
   return data */
 
   await fakePromise(1000)

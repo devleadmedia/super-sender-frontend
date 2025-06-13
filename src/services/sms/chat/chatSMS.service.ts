@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios'
+// import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import type {
   IContactChatSMS,
@@ -9,18 +9,42 @@ import { random } from 'lodash'
 export async function sendMessage(
   id: string,
   message: string,
-): Promise<IMessageChatSMS> {
-  const { data } = await api.post(`/chat/sms/${id}`, { message })
+): Promise<number> {
+  await fakePromise(1000)
+  // const { data } = await httpClientAxios.post(`/chat/sms/${id}`, { message })
 
-  return data
+  console.log(`Enviando mensagem para o contato ${id}: ${message}`)
+
+  return 12 // Simulando o retorno de créditos restantes
+}
+
+export async function confirmSendMessage(
+  id: string,
+  message: string,
+): Promise<IMessageChatSMS> {
+  await fakePromise(1000)
+
+  // const { data } = await httpClientAxios.post(`/chat/sms/confirm/${id}`, { message })
+
+  console.log(`Confirmando envio da mensagem para o contato ${id}: ${message}`)
+  return {
+    contactId: id,
+    date: new Date().toISOString(),
+    id: `${random(1000, 9999)}`,
+    message,
+  } // Simulando uma mensagem confirmada
 }
 
 export async function getMessageById(
-  userId: string,
+  contactId: string,
 ): Promise<IMessageChatSMS[]> {
-  // const { data } = await api.get(`/chat/message/sms/${userId}`)
-
-  await fakePromise(2000)
+  /* const { data } = await httpClientAxios.get<IMessageChatSMS[]>(
+    `/chat/message/sms/${contactId}`,
+    {
+      cancelPrevious: true,
+    },
+  ) */
+  await fakePromise(1000)
 
   const data: IMessageChatSMS[] = []
 
@@ -29,10 +53,10 @@ export async function getMessageById(
     date.setDate(date.getDate() + idx)
 
     data.push({
-      contactId: userId,
+      contactId,
       date: date.toISOString(),
       id: `${idx}`,
-      message: `Mensagem de um usuario para outro #${idx}`,
+      message: `U${contactId} Mensagem de um usuario para outro #${idx}`,
     })
 
     data.push({
@@ -42,12 +66,25 @@ export async function getMessageById(
       message: `Mensagem de um usuario para outro #${idx}`,
     })
   }
+
   return data
+}
+
+export async function favorite(contactId: string): Promise<void> {
+  await fakePromise(1000)
+  console.log(contactId)
+  // await httpClientAxios.put(`/chat/contact/sms/favorite/${contactId}`)
+}
+
+export async function deleteItem(contactId: string): Promise<void> {
+  await fakePromise(1000)
+  console.log(contactId)
+  // await httpClientAxios.delete(`/chat/contact/sms/delete/${contactId}`)
 }
 
 export async function getAllContacts(): Promise<IContactChatSMS[]> {
   await fakePromise(1000)
-  // const { data } = await api.get('/chat/contact/sms')
+  // const { data } = await httpClientAxios.get('/chat/contact/sms')
 
   const data: IContactChatSMS[] = []
 

@@ -1,10 +1,10 @@
-import { api } from 'src/boot/axios'
+import { httpClientAxios } from 'src/boot/axios'
 import { fakePromise } from 'src/utils/fakePromise.util'
 import { Status } from 'src/enums/Status.enum'
 import { ICampaign } from 'src/types/campaign/ICampaign.type'
 
 export async function getAll(): Promise<ICampaign[]> {
-  /* const { data } = await api.get('/campaign')
+  /* const { data } = await httpClientAxios.get('/campaign')
   return data */
 
   await fakePromise(1000)
@@ -28,7 +28,7 @@ export async function create(
   status: Status,
   menssageIds: string[],
 ) {
-  await api.post('/campaign/', { name, status, menssageIds })
+  await httpClientAxios.post('/campaign/', { name, status, menssageIds })
 }
 
 export async function save(
@@ -37,7 +37,7 @@ export async function save(
   status: Status,
   menssageIds: string[],
 ) {
-  await api.put(`/campaign/${id}`, {
+  await httpClientAxios.put(`/campaign/${id}`, {
     name,
     status,
     menssageIds,
@@ -45,13 +45,13 @@ export async function save(
 }
 
 export async function deleteItem(ids: string[]) {
-  await api.delete(`/campaign/`, {
+  await httpClientAxios.delete(`/campaign/`, {
     data: { ids },
   })
 }
 
 export async function disable(ids: string[]) {
-  await api.patch('/campaign/disable', {
+  await httpClientAxios.patch('/campaign/disable', {
     ids,
   })
 }
