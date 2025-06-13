@@ -2,8 +2,6 @@
   <q-page class="container q-layout-padding">
     <h1 class="text-h5">Templates de mensagem - SMS</h1>
 
-    {{ state.actionType }}
-
     <div class="flex justify-between gap-md q-mb-lg">
       <q-input
         outlined
