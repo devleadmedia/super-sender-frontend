@@ -1,20 +1,19 @@
 import * as AuthService from 'src/services/auth.service'
 import { useLocalStorage } from './useLocalStorage'
 import { useCookies } from './useCookies'
-import { useRouter } from 'vue-router'
 import { LocalStorageKey } from 'src/enums/LocalStorageKey.enum'
 import { CookieKey } from 'src/enums/CookieKey.enum'
 import requester from 'src/helpers/requester/Requester.helper'
-import { api } from '../boot/axios'
 import { Roles } from 'src/enums/Roles.enum'
 import { ShootingPermissions } from 'src/enums/shot/ShootingPermissions.enum'
+import { useRouterStatic } from './useRouterStatic'
 
 export function useAuth() {
   const { setCookie, getCookie, removeCookie } = useCookies()
   const { setLocalStorage, removeLocalStorage } = useLocalStorage()
-  const router = useRouter()
+  const { push } = useRouterStatic()
 
-  async function login(email: string, senha: string) {
+  function login(email: string, senha: string) {
     // const userData = await AuthService.login(email, senha)
 
     console.log(senha)
@@ -43,13 +42,13 @@ export function useAuth() {
     )
 
     setCookie(CookieKey.token, userData.token)
-    await router.push({ name: 'home' })
+    push('/app/home')
   }
 
-  async function logout() {
+  function logout() {
     removeLocalStorage(LocalStorageKey.user)
     removeCookie(CookieKey.token)
-    await router.push({ name: 'login' })
+    push('/login')
   }
 
   async function isLoggedIn(): Promise<boolean> {
@@ -69,40 +68,21 @@ export function useAuth() {
     return !!isLogged
   }
 
-  function startInterceptors() {
-    api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        if (error.response.status === 401) await handleLoggedIn()
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-        return Promise.reject(error)
-      },
-    )
-
-    api.interceptors.request.use((config) => {
-      if (getCookie(CookieKey.token)) {
-        config.withCredentials = true
-        config.headers['Authorization'] = `Bearer ${getCookie(CookieKey.token)}`
-      }
-      return config
-    })
-  }
-
   async function handleLoggedIn() {
     await requester.dispatch({
       callback: async () => {
         const islogged = await isLoggedIn()
         if (!islogged) {
-          await router.push('/login')
+          push('/login')
           removeCookie(CookieKey.token)
         }
       },
-      async errorCallback() {
-        await router.push('/login')
+      errorCallback() {
+        push('/login')
         removeCookie(CookieKey.token)
       },
     })
   }
 
-  return { login, logout, isLoggedIn, startInterceptors }
+  return { login, logout, isLoggedIn, handleLoggedIn }
 }

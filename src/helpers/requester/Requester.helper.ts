@@ -33,15 +33,17 @@ export default class ActionDispatcher {
       )
 
       if (successCallback) successCallback()
-    } catch (error: unknown) {
-      const errorStack = error as ICustomError
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
 
+      if(error.message === 'canceled') return
+      
+      const errorStack = error as ICustomError
       console.error(errorStack)
 
       const errorMessageTitleFeedback = errorMessageTitle || ''
       const errorMessageFeedback = errorMessage || ''
 
-      const err = error as any // eslint-disable-line @typescript-eslint/no-explicit-any
+      const err = error
 
       if (err?.response?.status && errorMessageStatus) {
         const { status } = err.response
