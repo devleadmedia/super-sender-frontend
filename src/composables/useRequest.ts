@@ -44,44 +44,10 @@ export function useRequest() {
     pendingRequests.delete(fullKey)
   }
 
-  function startInterceptors() {
-    // RESPONSE
-    /* api.interceptors.response.use(
-      (response: CustomResponse) => {
-        if (response.config.cancelPrevious) clearPendingRequest(response.config)
-
-        return response
-      },
-      async (error) => {
-        if (error.response.status === 401) await handleLoggedIn()
-
-        const config = error.config as CustomRequestConfig
-
-        if (config.cancelPrevious) clearPendingRequest(config)
-
-        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-        return Promise.reject(error)
-      },
-    )
-
-    // REQUEST
-    api.interceptors.request.use((config: CustomRequestConfig) => {
-      if (getCookie(CookieKey.token)) {
-        config.withCredentials = true
-        config.headers['Authorization'] = `Bearer ${getCookie(CookieKey.token)}`
-      }
-
-      if (config.cancelPrevious) handlePendingRequest(config)
-
-      return config
-    }) */
-  }
-
   return {
     getRequestKey,
     handleLoggedIn,
     extractBaseRoute,
-    startInterceptors,
     clearPendingRequest,
     handlePendingRequest,
   }
