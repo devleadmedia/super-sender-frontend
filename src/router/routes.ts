@@ -70,50 +70,70 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'buyCredit',
         name: 'buyCredit',
-        component: () =>
-          import('src/pages/buy-credit/BuyCredit.vue'),
+        component: () => import('src/pages/buy-credit/BuyCredit.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
       {
         path: 'messageSMS',
         name: 'messageSMS',
-        component: () =>
-          import('src/pages/sms/message/MessageSMS.vue'),
+        component: () => import('src/pages/sms/message/MessageSMS.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
       {
         path: 'contactSMS',
         name: 'contactSMS',
-        component: () =>
-          import('src/pages/sms/contact/ContactSMS.vue'),
+        component: () => import('src/pages/sms/contact/ContactSMS.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
       {
         path: 'shootingSMS',
         name: 'shootingSMS',
-        component: () =>
-          import('src/pages/sms/shooting/ShootingSMS.vue'),
-        meta: { requiresAuth: true, roles: [] },
-      },
-      {
-        path: 'campaign',
-        name: 'campaign',
-        component: () =>
-          import('src/pages/campaign/CampaignPage.vue'),
-        meta: { requiresAuth: true, roles: [] },
-      },
-      {
-        path: 'support',
-        name: 'support',
-        component: () =>
-          import('src/pages/support/SupportPage.vue'),
+        component: () => import('src/pages/sms/shooting/ShootingSMS.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
       {
         path: 'chatSMS',
         name: 'chatSMS',
+        component: () => import('src/pages/sms/chat/ChatSMS.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+
+      {
+        path: 'messageWhatsapp',
+        name: 'messageWhatsapp',
         component: () =>
-          import('src/pages/sms/chat/ChatSMS.vue'),
+          import('src/pages/whatsapp/message/MessageWhatsapp.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'contactWhatsapp',
+        name: 'contactWhatsapp',
+        component: () =>
+          import('src/pages/whatsapp/contact/ContactWhatsapp.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'shootingWhatsapp',
+        name: 'shootingWhatsapp',
+        component: () => import('src/pages/sms/shooting/ShootingSMS.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'chatWhatsapp',
+        name: 'chatWhatsapp',
+        component: () => import('src/pages/sms/chat/ChatSMS.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'campaign',
+        name: 'campaign',
+        component: () => import('src/pages/campaign/CampaignPage.vue'),
+        meta: { requiresAuth: true, roles: [] },
+      },
+      {
+        path: 'support',
+        name: 'support',
+        component: () => import('src/pages/support/SupportPage.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
     ],
