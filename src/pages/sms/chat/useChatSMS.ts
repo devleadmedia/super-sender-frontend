@@ -122,6 +122,12 @@ export function useChatSMS() {
         const response = await ChatSMS.getMessageById(contactId)
         state.value.chat.messagens = response
       },
+      successCallback: () => {
+        const idx = state.value.list.findIndex(
+          (item) => item.contactId === contactId,
+        )
+        state.value.list[idx]!.newMessagens = 0
+      },
       errorMessageTitle: 'Houve um erro',
       errorMessage: 'Não foi possível enviar a mensagem',
       loaders: [loader.getMessagens],

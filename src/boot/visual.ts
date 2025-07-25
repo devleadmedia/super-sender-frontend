@@ -19,7 +19,7 @@ export default boot(({ app }) => {
   }
   app.config.globalProperties.$vMenu = {
     bordered: true,
-    class: 'shadow-0',
+    class: 'shadow-0 q-card--bordered',
   }
   app.config.globalProperties.$vScrollArea = {
     'thumb-style': {
