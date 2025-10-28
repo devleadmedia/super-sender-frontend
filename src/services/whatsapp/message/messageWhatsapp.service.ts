@@ -3,7 +3,10 @@ import { fakePromise } from 'src/utils/fakePromise.util'
 import type { Status } from 'src/enums/Status.enum'
 import { random } from 'lodash'
 import { statusOptions } from 'src/constants/status.const'
-import { ITemplateMessageWhatsapp } from 'src/types/whatsapp/IMessageWhatsapp.type'
+import {
+  IMessageWhatsapp,
+  ITemplateMessageWhatsapp,
+} from 'src/types/whatsapp/IMessageWhatsapp.type'
 
 export async function getAll(): Promise<ITemplateMessageWhatsapp[]> {
   /* const { data } = await httpClientAxios.get('/message/sms/table')
@@ -22,7 +25,7 @@ export async function getAll(): Promise<ITemplateMessageWhatsapp[]> {
         {
           message: `Mensagem de alguma coisa ${idx}`,
           audioURL: null,
-          fileURL: null,
+          document: null,
           imageURL: null,
           videoURL: null,
           id: `${idx}`,
@@ -35,10 +38,15 @@ export async function getAll(): Promise<ITemplateMessageWhatsapp[]> {
   return data
 }
 
-export async function create(title: string, campaignId: string) {
+export async function create(
+  title: string,
+  campaignId: string,
+  messagens: IMessageWhatsapp[],
+) {
   await httpClientAxios.post('/message/sms', {
     title,
     campaignId,
+    messagens,
   })
 }
 
@@ -47,11 +55,13 @@ export async function save(
   title: string,
   status: Status,
   campaignId: string,
+  messagens: IMessageWhatsapp[],
 ) {
   await httpClientAxios.put(`/message/sms/${id}`, {
     title,
     status,
     campaignId,
+    messagens,
   })
 }
 

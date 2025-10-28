@@ -14,5 +14,12 @@ export interface IMessageWhatsapp {
   imageURL: string | null
   videoURL: string | null
   audioURL: string | null
-  fileURL: string | null
+  document: IDocumentMessageWhatsapp | null
+}
+
+export interface IDocumentMessageWhatsapp {
+  name: string
+  size: string
+  type: string
+  url: string
 }

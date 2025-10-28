@@ -2,6 +2,11 @@
 
 A Quasar Project
 
+Regras do whatsapp:
+https://developers.facebook.com/docs/whatsapp/cloud-api/reference/media#supported-media-types
+
+https://staskobzar.github.io/vue-audio-visual/?ref=madewithvuejs.com
+
 ## Install the dependencies
 ```bash
 yarn

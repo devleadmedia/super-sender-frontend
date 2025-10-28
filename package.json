@@ -26,6 +26,7 @@
     "quasar": "^2.16.0",
     "tippy.js": "^6.3.7",
     "vue": "^3.4.18",
+    "vue-audio-visual": "^3.0.11",
     "vue-router": "^4.0.12",
     "xlsx": "^0.18.5"
   },

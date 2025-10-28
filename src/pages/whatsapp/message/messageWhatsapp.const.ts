@@ -4,6 +4,7 @@ import { Status } from 'src/enums/Status.enum'
 import { ICampaign } from 'src/types/campaign/ICampaign.type'
 import { IUser } from 'src/types/user/IUser.type'
 import {
+  IDocumentMessageWhatsapp,
   IMessageWhatsapp,
   ITemplateMessageWhatsapp,
 } from 'src/types/whatsapp/IMessageWhatsapp.type'
@@ -14,7 +15,7 @@ export interface IFormMessageWhatsapp extends IMessageWhatsapp {
 
 export enum CurrentTypeFile {
   audio,
-  file,
+  document,
   image,
   video,
 }
@@ -24,11 +25,6 @@ export interface IState {
     clients: IUser[]
     campaigns: ICampaign[]
   }
-/*   midiaURLs: string[]
-  currentTypeFile: CurrentTypeFile
-  currentFile: File | null
-  currentFileURL: string | null
-  currentMessage: string */
   form: {
     id: string
     title: string
@@ -40,6 +36,8 @@ export interface IState {
     file: File | null
     fileURL: string | null
     currentMessage: string
+    messageEdit: IMessageWhatsapp | null
+    fileDocument: IDocumentMessageWhatsapp | null
   }
   openImageURL: string
   list: ITemplateMessageWhatsapp[]
@@ -58,14 +56,11 @@ export const initState: IState = {
     currentMessage: '',
     file: null,
     fileURL: null,
+    fileDocument: null,
     typeFile: CurrentTypeFile.image,
     urls: [],
+    messageEdit: null,
   },
- /*  midiaURLs: [],
-  currentFile: null,
-  currentFileURL: null,
-  currentMessage: '',
-  currentTypeFile: CurrentTypeFile.image, */
   options: {
     clients: [],
     campaigns: [],
@@ -82,13 +77,6 @@ export const messageSMSTableColumns: QTableColumn[] = [
     label: 'Titulo',
     field: 'title',
     name: 'title',
-    sortable: true,
-    align: 'left',
-  },
-  {
-    label: 'Mensagem',
-    field: 'message',
-    name: 'message',
     sortable: true,
     align: 'left',
   },

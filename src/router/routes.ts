@@ -97,7 +97,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/sms/chat/ChatSMS.vue'),
         meta: { requiresAuth: true, roles: [] },
       },
-
       {
         path: 'messageWhatsapp',
         name: 'messageWhatsapp',
@@ -147,30 +146,3 @@ const routes: RouteRecordRaw[] = [
 ]
 
 export default routes
-
-/*
-Módulo SMS
-+ Disparos
-  - Novo Disparo
-  - Agendamentos
-  - Histórico
-    -- Relatórios
-    -- Respostas
-
-+ Listas de Contatos
-  - Nova Lista
-  - Listas
-    -- Contatos
-      --- Detalhes do Contato
-
-+ Templates de mensagens
-
-+ Dashboard
-
-+ Meu Perfil
-  - Meus dados
-  - Minha Carteira
-    -- Comprar créditos
-    -- Extrato de consumo
-    -- Tabela de preços
-*/

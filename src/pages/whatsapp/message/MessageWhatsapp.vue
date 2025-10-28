@@ -61,7 +61,7 @@
 
     <v-dialog :dialog-id="dialog.openImage">
       <q-card v-bind="$vCard" style="width: 500px">
-        <q-img :src="state.openImageURL" fit="contain" />
+        <q-img fit="contain" height="600px" :src="state.openImageURL" />
 
         <q-separator />
 
@@ -169,6 +169,15 @@
             fit="contain"
           />
 
+          <document-whatsapp
+            v-if="
+              state.form.fileDocument &&
+              state.form.fileURL &&
+              state.form.typeFile == CurrentTypeFile.document
+            "
+            v-bind="state.form.fileDocument"
+          />
+
           <q-infinite-scroll
             v-if="!state.form.fileURL"
             ref="infiniteScroll"
@@ -180,6 +189,9 @@
               :key="index"
               sent
               class="chat-message"
+              :bg-color="
+                state.form.messageEdit?.id == item.id ? 'secondary' : undefined
+              "
             >
               <template #default>
                 <div>
@@ -206,8 +218,15 @@
                     :src="item.imageURL"
                     @click="openImage(item.imageURL)"
                     fit="cover"
-                    width="240px"
+                    width="200px"
+                    height="200px"
                     class="q-mb-sm rounded-borders cursor-pointer"
+                  />
+
+                  <document-whatsapp
+                    v-if="item.document"
+                    v-bind="item.document"
+                    class="bg-grey"
                   />
 
                   <div v-html="formatMessage(item.message)"></div>
@@ -230,7 +249,17 @@
                         :target="`#more-icon-${index}`"
                       >
                         <q-list dense separator>
-                          <q-item clickable v-ripple>
+                          <q-item
+                            clickable
+                            v-ripple
+                            v-if="
+                              !item.audioURL &&
+                              !item.imageURL &&
+                              !item.videoURL &&
+                              !item.document
+                            "
+                            @click="selectEditMessage(item)"
+                          >
                             <q-item-section>Editar</q-item-section>
                           </q-item>
                           <q-item
@@ -261,7 +290,18 @@
               >
                 <template v-slot:before>
                   <q-btn
-                    v-if="state.form.file"
+                    v-if="state.form.messageEdit"
+                    color="negative"
+                    icon="close"
+                    round
+                    unelevated
+                    dense
+                    @click="cancelEditMessage"
+                  >
+                    <q-tooltip>Remover arquivo</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-else-if="state.form.file"
                     color="negative"
                     icon="close"
                     round
@@ -306,6 +346,7 @@
                 label="Salvar"
                 unelevated
                 @click="save"
+                :disable="state.form.messagens.length === 0"
                 :loading="loaderStatus(loader.edit)"
               />
             </q-card-actions>
@@ -330,6 +371,7 @@ import ActionHeader from 'src/components/action-header/ActionHeader.vue'
 import StatusRow from 'src/components/table/StatusRow.vue'
 import { filePermissionsWhatsapp } from 'src/constants/whatsapp/permissionsFile.const'
 import AudioWhatsapp from 'src/components/audio/AudioWhatsapp.vue'
+import DocumentWhatsapp from 'src/components/whatsapp/document/DocumentWhatsapp.vue'
 // import AudioTest from 'src/assets/faz-o-l-vinheta.mp3'
 
 const {
@@ -353,6 +395,8 @@ const {
   handleFileChange,
   openActionDialog,
   removeCurrentFile,
+  selectEditMessage,
+  cancelEditMessage,
   disableChatMessage,
 } = useMessageSMS()
 
